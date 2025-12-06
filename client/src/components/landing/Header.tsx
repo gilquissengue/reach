@@ -16,6 +16,7 @@ export default function Header() {
     { name: "Início", href: "/" },
     { name: "Processo", href: "#processo" },
     { name: "Serviços", href: "#servicos" },
+    { name: "Parceiros", href: "#parceiros" },
   ];
 
   return (
@@ -23,12 +24,12 @@ export default function Header() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrolled ? "bg-background/50 backdrop-blur-xl border-b border-white/5 py-4" : "bg-transparent py-6"}`}
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrolled ? "bg-[#020617]/80 backdrop-blur-xl border-b border-white/5 py-4" : "bg-transparent py-6"}`}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         <Link href="/">
-          <a className="text-2xl font-display font-bold tracking-tighter text-white flex items-center gap-2">
-            REACH <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span>
+          <a className="text-2xl font-display font-bold tracking-tighter text-white flex items-center gap-2 group">
+            REACH <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse shadow-[0_0_10px_#3b82f6]"></span>
           </a>
         </Link>
 
@@ -37,18 +38,18 @@ export default function Header() {
             <a 
               key={link.name}
               href={link.href}
-              className="text-sm font-medium text-gray-400 hover:text-white transition-colors relative group"
+              className="text-sm font-medium text-gray-400 hover:text-white transition-colors relative group font-mono tracking-tight"
             >
               {link.name}
-              <span className="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-blue-500 transition-all group-hover:w-full group-hover:left-0" />
+              <span className="absolute -bottom-1 left-1/2 w-0 h-px bg-blue-500 transition-all group-hover:w-full group-hover:left-0" />
             </a>
           ))}
         </nav>
 
         <Button 
-          className="bg-blue-600 text-white hover:bg-blue-500 rounded-full px-6 shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] transition-all duration-300"
+          className="bg-blue-600 text-white hover:bg-blue-500 rounded-full px-6 shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] transition-all duration-300 font-medium tracking-wide"
         >
-          Pedir Orçamento
+          Iniciar Projeto
         </Button>
       </div>
     </motion.header>

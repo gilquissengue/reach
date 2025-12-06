@@ -6,6 +6,7 @@
 @theme inline {
   --font-sans: 'Inter', sans-serif;
   --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
   --radius-sm: 2px;
   --radius-md: 4px;
@@ -45,8 +46,7 @@
 }
 
 :root {
-  /* Default to Dark Mode aesthetics for "High End" feel */
-  --background: 222 47% 2%; /* Almost Black/Deep Blue */
+  --background: 222 47% 2%;
   --foreground: 210 40% 98%;
 
   --card: 222 47% 4%;
@@ -55,7 +55,7 @@
   --popover: 222 47% 4%;
   --popover-foreground: 210 40% 98%;
 
-  --primary: 221 83% 53%; /* Electric Blue */
+  --primary: 221 83% 53%;
   --primary-foreground: 210 40% 98%;
 
   --secondary: 217 33% 10%;
@@ -78,7 +78,6 @@
 }
 
 .dark {
-  /* Same as root since we are enforcing dark mode */
   --background: 222 47% 2%;
   --foreground: 210 40% 98%;
   --card: 222 47% 4%;
@@ -106,14 +105,13 @@
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 100%);
+    background-image: radial-gradient(circle at 50% 0%, #0f172a 0%, #020617 100%);
     background-attachment: fixed;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight;
   }
   
-  /* Custom Scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
   }
@@ -137,10 +135,19 @@
   }
   
   .text-glow {
-    text-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+    text-shadow: 0 0 30px rgba(37, 99, 235, 0.6);
   }
 
   .mask-gradient-b {
     mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  }
+
+  .animate-scrolling-text {
+    animation: scrolling-text 20s linear infinite;
+  }
+
+  @keyframes scrolling-text {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 }
