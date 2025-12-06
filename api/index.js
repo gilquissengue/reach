@@ -2,7 +2,7 @@
 // CRITICAL: Prevent file downloads - force HTML rendering
 
 const handler = async (req, res) => {
-  // Store original methods BEFORE any interception
+  // ABSOLUTE FIRST: Block Content-Disposition IMMEDIATELY before anything else
   const originalSetHeader = res.setHeader.bind(res);
   const originalWriteHead = res.writeHead.bind(res);
   const originalWrite = res.write.bind(res);
@@ -38,18 +38,20 @@ const handler = async (req, res) => {
   const isHtmlRequest = requestPath === '/' || requestPath === '/index.html' || 
     (!requestPath.includes('.') && !requestPath.startsWith('/api') && !requestPath.startsWith('/assets'));
   
-  // Intercept setHeader to block Content-Disposition and force HTML for root paths
+  // CRITICAL: Intercept setHeader FIRST - BLOCK Content-Disposition completely
   res.setHeader = function(name, value) {
     const lowerName = name.toLowerCase();
     
-    // COMPLETELY BLOCK Content-Disposition
+    // ABSOLUTELY BLOCK Content-Disposition - NEVER allow it
     if (lowerName === 'content-disposition') {
-      return this;
+      console.warn('Blocked Content-Disposition header attempt');
+      return this; // Block it completely - don't set it
     }
     
     // Force HTML content type for HTML requests
     if (isHtmlRequest && lowerName === 'content-type' && typeof value === 'string') {
       if (!value.includes('text/html')) {
+        console.log(`Forcing HTML content type for: ${requestPath}`);
         value = 'text/html; charset=utf-8';
       }
     }
@@ -57,7 +59,7 @@ const handler = async (req, res) => {
     return originalSetHeader(name, value);
   };
   
-  // Intercept writeHead
+  // Intercept writeHead - REMOVE Content-Disposition from headers
   res.writeHead = function(statusCode, statusMessage, headers) {
     let finalHeaders = headers;
     
@@ -68,7 +70,7 @@ const handler = async (req, res) => {
     
     if (!finalHeaders) finalHeaders = {};
     
-    // Remove Content-Disposition
+    // REMOVE Content-Disposition completely
     delete finalHeaders['Content-Disposition'];
     delete finalHeaders['content-disposition'];
     
@@ -81,28 +83,34 @@ const handler = async (req, res) => {
     return originalWriteHead.call(this, statusCode, statusMessage, finalHeaders);
   };
   
-  // Intercept write
+  // Intercept write - ensure headers are set correctly
   res.write = function(chunk, encoding) {
     if (!res.headersSent && isHtmlRequest) {
       originalSetHeader('Content-Type', 'text/html; charset=utf-8');
       originalSetHeader('X-Content-Type-Options', 'nosniff');
-      try {
-        res.removeHeader('Content-Disposition');
-      } catch (e) {}
+      // Try multiple times to remove Content-Disposition
+      for (let i = 0; i < 3; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
     }
     return originalWrite.call(this, chunk, encoding);
   };
   
-  // Intercept end
+  // Intercept end - FINAL check before sending
   res.end = function(chunk, encoding) {
     if (!res.headersSent) {
       if (isHtmlRequest) {
         originalSetHeader('Content-Type', 'text/html; charset=utf-8');
         originalSetHeader('X-Content-Type-Options', 'nosniff');
       }
-      try {
-        res.removeHeader('Content-Disposition');
-      } catch (e) {}
+      // Try multiple times to remove Content-Disposition
+      for (let i = 0; i < 5; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
     }
     return originalEnd.call(this, chunk, encoding);
   };
@@ -113,9 +121,12 @@ const handler = async (req, res) => {
       if (isHtmlRequest) {
         originalSetHeader('Content-Type', 'text/html; charset=utf-8');
         originalSetHeader('X-Content-Type-Options', 'nosniff');
-        try {
-          res.removeHeader('Content-Disposition');
-        } catch (e) {}
+        // Try multiple times to remove Content-Disposition
+        for (let i = 0; i < 5; i++) {
+          try {
+            res.removeHeader('Content-Disposition');
+          } catch (e) {}
+        }
       }
       return originalSend.call(this, body);
     };
@@ -127,9 +138,12 @@ const handler = async (req, res) => {
       if (isHtmlRequest) {
         originalSetHeader('Content-Type', 'text/html; charset=utf-8');
         originalSetHeader('X-Content-Type-Options', 'nosniff');
-        try {
-          res.removeHeader('Content-Disposition');
-        } catch (e) {}
+        // Try multiple times to remove Content-Disposition
+        for (let i = 0; i < 5; i++) {
+          try {
+            res.removeHeader('Content-Disposition');
+          } catch (e) {}
+        }
       }
       return originalSendFile.call(this, filePath, options, callback);
     };
@@ -148,6 +162,12 @@ const handler = async (req, res) => {
       console.error('Failed to require server module:', error);
       if (!res.headersSent) {
         originalSetHeader('Content-Type', 'text/html; charset=utf-8');
+        // Remove Content-Disposition
+        for (let i = 0; i < 5; i++) {
+          try {
+            res.removeHeader('Content-Disposition');
+          } catch (e) {}
+        }
         return originalEnd(`
           <!DOCTYPE html>
           <html>
@@ -172,6 +192,12 @@ const handler = async (req, res) => {
       console.error('Server module does not export a function');
       if (!res.headersSent) {
         originalSetHeader('Content-Type', 'text/html; charset=utf-8');
+        // Remove Content-Disposition
+        for (let i = 0; i < 5; i++) {
+          try {
+            res.removeHeader('Content-Disposition');
+          } catch (e) {}
+        }
         return originalEnd(`
           <!DOCTYPE html>
           <html>
@@ -191,12 +217,27 @@ const handler = async (req, res) => {
     // Call the Express app handler
     await appHandler(req, res);
     
+    // FINAL SAFETY CHECK: After handler completes, ensure no Content-Disposition
+    if (!res.headersSent) {
+      for (let i = 0; i < 5; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
+    }
+    
   } catch (error) {
     console.error('Error in serverless function:', error);
     console.error(error.stack);
     
     if (!res.headersSent) {
       originalSetHeader('Content-Type', 'text/html; charset=utf-8');
+      // Remove Content-Disposition
+      for (let i = 0; i < 5; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
       return originalEnd(`
         <!DOCTYPE html>
         <html>

@@ -13,6 +13,7 @@ export function serveStatic(app: Express) {
     path.resolve(process.cwd(), "dist", "public"),
     path.resolve(process.cwd(), ".vercel", "output", "static"),
     path.resolve(process.cwd(), "public"),
+    path.resolve(process.cwd(), "build"),
   ];
   
   let staticPath: string | null = null;
@@ -44,6 +45,7 @@ export function serveStatic(app: Express) {
   }
 
   // CRITICAL: Middleware to BLOCK Content-Disposition and force HTML for root paths
+  // This MUST be BEFORE express.static
   app.use((req, res, next) => {
     // Helper to get request path reliably
     const getRequestPath = () => {
@@ -75,6 +77,7 @@ export function serveStatic(app: Express) {
     // Block Content-Disposition header completely
     res.setHeader = function(name: string, value: any) {
       if (name.toLowerCase() === 'content-disposition') {
+        console.warn('Blocked Content-Disposition header in static middleware');
         return this; // Block it completely
       }
       
@@ -117,9 +120,12 @@ export function serveStatic(app: Express) {
       if (!res.headersSent && isHtmlRequest) {
         originalSetHeader('Content-Type', 'text/html; charset=utf-8');
         originalSetHeader('X-Content-Type-Options', 'nosniff');
-        try {
-          res.removeHeader('Content-Disposition');
-        } catch (e) {}
+        // Try multiple times to remove Content-Disposition
+        for (let i = 0; i < 5; i++) {
+          try {
+            res.removeHeader('Content-Disposition');
+          } catch (e) {}
+        }
       }
       return originalEnd.call(this, chunk, encoding);
     };
@@ -128,6 +134,12 @@ export function serveStatic(app: Express) {
     if (isHtmlRequest) {
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       res.setHeader('X-Content-Type-Options', 'nosniff');
+      // Remove Content-Disposition multiple times
+      for (let i = 0; i < 5; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
     }
     
     next();
@@ -157,9 +169,11 @@ export function serveStatic(app: Express) {
       }
       
       // CRITICAL: Remove Content-Disposition - NEVER allow downloads
-      try {
-        res.removeHeader('Content-Disposition');
-      } catch (e) {}
+      for (let i = 0; i < 5; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
     },
     index: 'index.html',
     dotfiles: 'ignore'
@@ -167,13 +181,29 @@ export function serveStatic(app: Express) {
 
   // Fall through to index.html for SPA routing (MUST be last)
   app.use("*", (req, res) => {
+    // Helper to get request path
+    const getRequestPath = () => {
+      if (req.path) return req.path;
+      if (req.url) {
+        try {
+          const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+          return url.pathname;
+        } catch {
+          return req.url.split('?')[0];
+        }
+      }
+      return '/';
+    };
+    
+    const requestPath = getRequestPath();
+    
     // Skip API routes and static assets
-    if (req.path.startsWith('/api/')) {
+    if (requestPath.startsWith('/api/')) {
       return res.status(404).json({ error: 'Not found' });
     }
     
-    // Skip if it's a static asset request
-    if (req.path.includes('.') && !req.path.endsWith('.html')) {
+    // Skip if it's a static asset request (has extension and not HTML)
+    if (requestPath.includes('.') && !requestPath.endsWith('.html')) {
       return res.status(404).end();
     }
     
@@ -181,9 +211,11 @@ export function serveStatic(app: Express) {
     
     if (!fs.existsSync(indexPath)) {
       // Remove Content-Disposition before setting headers
-      try {
-        res.removeHeader('Content-Disposition');
-      } catch (e) {}
+      for (let i = 0; i < 5; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       res.setHeader('X-Content-Type-Options', 'nosniff');
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -200,10 +232,12 @@ export function serveStatic(app: Express) {
     try {
       const htmlContent = fs.readFileSync(indexPath, 'utf-8');
       
-      // ABSOLUTE FIRST: Remove Content-Disposition if it exists
-      try {
-        res.removeHeader('Content-Disposition');
-      } catch (e) {}
+      // ABSOLUTE FIRST: Remove Content-Disposition if it exists (try multiple times)
+      for (let i = 0; i < 10; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
       
       // Set headers EXPLICITLY in the correct order
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -211,17 +245,22 @@ export function serveStatic(app: Express) {
       res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
       
       // Remove Content-Disposition one more time before sending
-      try {
-        res.removeHeader('Content-Disposition');
-      } catch (e) {}
+      for (let i = 0; i < 10; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
       
       // Use end() to send HTML directly - this gives us full control
       res.status(200).end(htmlContent);
     } catch (err) {
       console.error('Error reading index.html:', err);
-      try {
-        res.removeHeader('Content-Disposition');
-      } catch (e) {}
+      // Remove Content-Disposition
+      for (let i = 0; i < 10; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       res.setHeader('X-Content-Type-Options', 'nosniff');
       res.status(500).end(`

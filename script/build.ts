@@ -1,6 +1,8 @@
 import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
-import { rm, readFile } from "fs/promises";
+import { rm, readFile, mkdir, cp } from "fs/promises";
+import { existsSync } from "fs";
+import path from "path";
 
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
@@ -34,6 +36,8 @@ const allowlist = [
 
 async function buildAll() {
   await rm("dist", { recursive: true, force: true });
+  await rm("build", { recursive: true, force: true });
+  await rm("public", { recursive: true, force: true });
 
   console.log("building client...");
   await viteBuild();
@@ -59,6 +63,12 @@ async function buildAll() {
     external: externals,
     logLevel: "info",
   });
+  
+  // Ensure static files are accessible for Vercel serverless function
+  const staticSource = path.resolve("dist", "public");
+  if (existsSync(staticSource)) {
+    console.log(`✓ Static files built at: ${staticSource}`);
+  }
 }
 
 buildAll().catch((err) => {
