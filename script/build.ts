@@ -54,10 +54,6 @@ async function buildAll() {
     outfile: "dist/index.cjs",
     define: {
       "process.env.NODE_ENV": '"production"',
-      "process.env.VERCEL": 'process.env.VERCEL || process.env.VERCEL_ENV ? "1" : undefined',
-    },
-    banner: {
-      js: '// @ts-nocheck\n',
     },
     minify: true,
     external: externals,
