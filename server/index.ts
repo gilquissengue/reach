@@ -95,11 +95,25 @@ const setupApp = async () => {
 };
 
 // For Vercel: export a function that ensures app is setup
-if (process.env.VERCEL) {
+// Check for Vercel environment (either VERCEL env var or when running as serverless)
+if (process.env.VERCEL || (typeof process.env.VERCEL_ENV !== 'undefined')) {
   // Export a function that waits for setup
   const vercelHandler = async (req: any, res: any) => {
-    await setupApp();
-    return app(req, res);
+    try {
+      await setupApp();
+      return app(req, res);
+    } catch (err) {
+      console.error('Error in Vercel handler:', err);
+      if (!res.headersSent) {
+        res.status(500).setHeader('Content-Type', 'text/html; charset=utf-8').send(`
+          <!DOCTYPE html>
+          <html>
+            <head><meta charset="utf-8"><title>Server Error</title></head>
+            <body><h1>Server Error</h1><p>Failed to initialize server.</p></body>
+          </html>
+        `);
+      }
+    }
   };
   
   // @ts-ignore - CommonJS export for Vercel

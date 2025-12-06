@@ -42,6 +42,16 @@ export function serveStatic(app: Express) {
     return;
   }
 
+  // CRITICAL: Middleware to ensure HTML Content-Type BEFORE static files
+  app.use((req, res, next) => {
+    // For HTML requests, set Content-Type immediately
+    if (!req.path.includes('.') || req.path.endsWith('.html') || req.path.endsWith('/')) {
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.removeHeader('Content-Disposition');
+    }
+    next();
+  });
+
   // Serve static files with proper headers
   app.use(express.static(staticPath, {
     setHeaders: (res, filePath) => {
@@ -56,13 +66,14 @@ export function serveStatic(app: Express) {
       } else if (ext === '.json') {
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
       }
-      // Prevent download - remove Content-Disposition if it exists
+      // CRITICAL: Prevent download - remove Content-Disposition if it exists
       try {
         res.removeHeader('Content-Disposition');
       } catch (e) {
         // Ignore if header doesn't exist
       }
-    }
+    },
+    index: 'index.html'
   }));
 
   // fall through to index.html if the file doesn't exist (SPA routing)
@@ -75,9 +86,16 @@ export function serveStatic(app: Express) {
     const indexPath = path.resolve(staticPath, "index.html");
     
     if (!fs.existsSync(indexPath)) {
-      return res.status(404).setHeader('Content-Type', 'text/html; charset=utf-8').send(`
+      // CRITICAL: Set headers BEFORE send
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.removeHeader('Content-Disposition');
+      return res.status(404).send(`
+        <!DOCTYPE html>
         <html>
-          <head><title>Not Found</title></head>
+          <head>
+            <meta charset="utf-8">
+            <title>Not Found</title>
+          </head>
           <body>
             <h1>404 Not Found</h1>
             <p>The requested page could not be found.</p>
@@ -86,33 +104,31 @@ export function serveStatic(app: Express) {
       `);
     }
     
-    // Explicitly set all necessary headers before sending
+    // CRITICAL: Set headers BEFORE sendFile
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.removeHeader('Content-Disposition');
     
-    // Ensure no download header
+    // Read file and send with explicit headers
     try {
-      res.removeHeader('Content-Disposition');
-    } catch (e) {
-      // Ignore if header doesn't exist
+      const htmlContent = fs.readFileSync(indexPath, 'utf-8');
+      res.send(htmlContent);
+    } catch (err) {
+      console.error('Error reading index.html:', err);
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.status(500).send(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Server Error</title>
+          </head>
+          <body>
+            <h1>Internal Server Error</h1>
+            <p>Failed to load page.</p>
+          </body>
+        </html>
+      `);
     }
-    
-    // Send the file
-    res.sendFile(indexPath, (err) => {
-      if (err) {
-        console.error('Error sending index.html:', err);
-        if (!res.headersSent) {
-          res.status(500).setHeader('Content-Type', 'text/html; charset=utf-8').send(`
-            <html>
-              <head><title>Server Error</title></head>
-              <body>
-                <h1>Internal Server Error</h1>
-                <p>Failed to load page.</p>
-              </body>
-            </html>
-          `);
-        }
-      }
-    });
   });
 }
