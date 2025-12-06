@@ -8,8 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent } from "@/components/ui/card";
-import { ChevronRight, ChevronLeft, Check } from "lucide-react";
+import { ChevronRight, ChevronLeft, Check, Terminal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
@@ -31,21 +30,20 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const STEPS = [
-  { id: 'contact', title: 'Dados de Contacto' },
-  { id: 'objective', title: 'Objectivo' },
-  { id: 'ads_history', title: 'Histórico de Anúncios' },
-  { id: 'budget', title: 'Orçamento' },
-  { id: 'platforms', title: 'Plataformas' },
-  { id: 'accounts', title: 'Contas de Anúncios' },
-  { id: 'urgency', title: 'Urgência' },
-  { id: 'details', title: 'Detalhes da Empresa' },
-  { id: 'role', title: 'Função' },
-  { id: 'finish', title: 'Finalizar' },
+  { id: 'contact', title: 'Start' },
+  { id: 'objective', title: 'Target' },
+  { id: 'ads_history', title: 'History' },
+  { id: 'budget', title: 'Budget' },
+  { id: 'platforms', title: 'Channels' },
+  { id: 'accounts', title: 'Status' },
+  { id: 'urgency', title: 'Timeline' },
+  { id: 'details', title: 'Profile' },
+  { id: 'role', title: 'Role' },
+  { id: 'finish', title: 'Finish' },
 ];
 
 export default function MultiStepForm() {
   const [step, setStep] = useState(0);
-  const [direction, setDirection] = useState(0);
   
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -56,328 +54,250 @@ export default function MultiStepForm() {
 
   const platforms = watch("platforms");
 
-  const onNext = () => {
-    setDirection(1);
-    setStep((prev) => Math.min(prev + 1, STEPS.length - 1));
-  };
-
-  const onBack = () => {
-    setDirection(-1);
-    setStep((prev) => Math.max(prev - 1, 0));
-  };
+  const onNext = () => setStep((prev) => Math.min(prev + 1, STEPS.length - 1));
+  const onBack = () => setStep((prev) => Math.max(prev - 1, 0));
 
   const onSubmit = (data: FormData) => {
     console.log(data);
-    alert("Formulário enviado com sucesso! (Simulação)");
-  };
-
-  const variants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 50 : -50,
-      opacity: 0,
-    }),
-    center: {
-      zIndex: 1,
-      x: 0,
-      opacity: 1,
-    },
-    exit: (direction: number) => ({
-      zIndex: 0,
-      x: direction < 0 ? 50 : -50,
-      opacity: 0,
-    }),
+    alert("Dados processados com sucesso. Entraremos em contacto.");
   };
 
   return (
-    <section className="py-24 bg-gradient-to-b from-white to-brand-blue-light relative overflow-hidden">
-      <div className="container mx-auto px-4 max-w-3xl relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-display font-bold text-brand-blue-dark mb-4">Vamos elaborar um orçamento personalizado</h2>
-          <p className="text-gray-600">Partilhe connosco a tua necessidade.</p>
-        </div>
-
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-medium text-brand-blue">Passo {step + 1} de {STEPS.length}</span>
-            <span className="text-sm font-medium text-gray-500">{STEPS[step].title}</span>
+    <section className="py-32 bg-background relative border-t border-white/5">
+      <div className="container mx-auto px-6 max-w-5xl">
+        <div className="grid md:grid-cols-12 gap-12">
+          {/* Sidebar Navigation */}
+          <div className="md:col-span-4 space-y-8">
+            <div>
+              <h2 className="text-3xl font-display font-bold text-white mb-2">Configurar Projeto</h2>
+              <p className="text-gray-400 text-sm">Preencha os parâmetros para inicializar o planeamento estratégico.</p>
+            </div>
+            
+            <div className="space-y-2">
+              {STEPS.map((s, i) => (
+                <div 
+                  key={s.id}
+                  className={cn(
+                    "flex items-center gap-3 p-3 rounded-lg transition-all duration-300",
+                    step === i ? "bg-blue-600/10 border border-blue-600/20" : "opacity-40"
+                  )}
+                >
+                  <div className={cn(
+                    "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono border",
+                    step === i ? "bg-blue-600 border-blue-600 text-white" : "border-white/20 text-white/40"
+                  )}>
+                    {i + 1}
+                  </div>
+                  <span className={cn(
+                    "text-sm font-medium",
+                    step === i ? "text-blue-400" : "text-gray-400"
+                  )}>
+                    {s.title}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-            <motion.div 
-              className="h-full bg-brand-blue"
-              initial={{ width: 0 }}
-              animate={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
-              transition={{ duration: 0.5 }}
-            />
-          </div>
-        </div>
 
-        <Card className="border-none shadow-2xl shadow-brand-blue/10 overflow-hidden">
-          <CardContent className="p-8 min-h-[400px] flex flex-col">
-            <AnimatePresence custom={direction} mode="wait">
-              <motion.div
-                key={step}
-                custom={direction}
-                variants={variants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ x: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.2 } }}
-                className="flex-1"
-              >
-                {/* STEP 0: CONTACT */}
-                {step === 0 && (
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-brand-blue-dark">Dados de Contacto</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <Label>Nome</Label>
-                        <Input {...register("name")} placeholder="Teu nome completo" className="h-12 bg-gray-50 border-gray-200 focus:border-brand-blue focus:ring-brand-blue/20" />
-                        {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
+          {/* Form Area */}
+          <div className="md:col-span-8">
+            <div className="glass rounded-2xl p-8 md:p-12 border border-white/10 min-h-[500px] flex flex-col relative overflow-hidden">
+              {/* Decorative scanline */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-20 animate-[scan_2s_linear_infinite]" />
+
+              <div className="flex-1">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={step}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-8"
+                  >
+                    {/* Render Steps */}
+                    {step === 0 && (
+                      <div className="space-y-6">
+                        <div className="flex items-center gap-2 text-blue-400 mb-6">
+                          <Terminal className="w-5 h-5" />
+                          <span className="text-xs font-mono uppercase tracking-wider">Initialize_User_Data</span>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white">Dados de Contacto</h3>
+                        <div className="grid gap-6">
+                          <div>
+                            <Label className="text-gray-400">Nome Completo</Label>
+                            <Input {...register("name")} className="bg-white/5 border-white/10 text-white focus:border-blue-500 h-12" />
+                          </div>
+                          <div>
+                            <Label className="text-gray-400">Email Corporativo</Label>
+                            <Input {...register("email")} className="bg-white/5 border-white/10 text-white focus:border-blue-500 h-12" />
+                          </div>
+                          <div>
+                            <Label className="text-gray-400">Telefone (+244)</Label>
+                            <Input {...register("phone")} className="bg-white/5 border-white/10 text-white focus:border-blue-500 h-12" />
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Email</Label>
-                        <Input {...register("email")} placeholder="teu@email.com" className="h-12 bg-gray-50 border-gray-200 focus:border-brand-blue focus:ring-brand-blue/20" />
-                        {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
-                      </div>
-                      <div>
-                        <Label>Telefone (🇦🇴 +244)</Label>
-                        <Input {...register("phone")} placeholder="9XX XXX XXX" className="h-12 bg-gray-50 border-gray-200 focus:border-brand-blue focus:ring-brand-blue/20" />
-                        {errors.phone && <span className="text-red-500 text-sm">{errors.phone.message}</span>}
-                      </div>
-                    </div>
-                  </div>
-                )}
+                    )}
 
-                {/* STEP 1: OBJECTIVE */}
-                {step === 1 && (
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-brand-blue-dark">Qual é o principal objectivo da sua empresa neste momento?</h3>
-                    <RadioGroup onValueChange={(val) => setValue("objective", val)} className="grid gap-4">
-                      {["Gerar leads", "Aumentar vendas", "Crescer seguidores/engajamento", "Reestruturar contas de anúncios", "Resolver bloqueios/acessos", "Outro"].map((opt) => (
-                        <div key={opt}>
-                          <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
-                          <Label
-                            htmlFor={opt}
-                            className="flex items-center justify-between p-4 rounded-xl border-2 border-gray-100 bg-white hover:bg-brand-blue-light/30 hover:border-brand-blue/30 peer-data-[state=checked]:border-brand-blue peer-data-[state=checked]:bg-brand-blue-light/50 cursor-pointer transition-all"
-                          >
-                            {opt}
-                            <Check className="w-4 h-4 text-brand-blue opacity-0 peer-data-[state=checked]:opacity-100 transition-opacity" />
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  </div>
-                )}
-
-                {/* STEP 2: ADS HISTORY */}
-                {step === 2 && (
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-brand-blue-dark">A sua empresa já investe em publicidade paga?</h3>
-                    <RadioGroup onValueChange={(val) => setValue("invests_in_ads", val)} className="grid gap-4">
-                      {["Sim, regularmente", "Sim, mas de forma pontual", "Não, será a primeira vez"].map((opt) => (
-                        <div key={opt}>
-                          <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
-                          <Label
-                            htmlFor={opt}
-                            className="flex items-center justify-between p-4 rounded-xl border-2 border-gray-100 bg-white hover:bg-brand-blue-light/30 hover:border-brand-blue/30 peer-data-[state=checked]:border-brand-blue peer-data-[state=checked]:bg-brand-blue-light/50 cursor-pointer transition-all"
-                          >
-                            {opt}
-                            <Check className="w-4 h-4 text-brand-blue opacity-0 peer-data-[state=checked]:opacity-100 transition-opacity" />
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  </div>
-                )}
-
-                {/* STEP 3: BUDGET */}
-                {step === 3 && (
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-brand-blue-dark">Qual é o orçamento mensal disponível para campanhas de mídia paga?</h3>
-                    <RadioGroup onValueChange={(val) => setValue("budget", val)} className="grid gap-4">
-                      {["Menos de 150.000 AKZ", "Entre 150.000 e 350.000 AKZ", "Entre 350.000 e 800.000 AKZ", "Acima de 800.000 AKZ", "Ainda não definido"].map((opt) => (
-                        <div key={opt}>
-                          <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
-                          <Label
-                            htmlFor={opt}
-                            className="flex items-center justify-between p-4 rounded-xl border-2 border-gray-100 bg-white hover:bg-brand-blue-light/30 hover:border-brand-blue/30 peer-data-[state=checked]:border-brand-blue peer-data-[state=checked]:bg-brand-blue-light/50 cursor-pointer transition-all"
-                          >
-                            {opt}
-                            <Check className="w-4 h-4 text-brand-blue opacity-0 peer-data-[state=checked]:opacity-100 transition-opacity" />
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  </div>
-                )}
-
-                {/* STEP 4: PLATFORMS */}
-                {step === 4 && (
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-brand-blue-dark">Em quais plataformas pretende anunciar?</h3>
-                    <div className="grid gap-4">
-                      {["META (Facebook/Instagram)", "Google Ads", "LinkedIn Ads", "Não tenho a certeza, preciso de orientação"].map((opt) => (
-                        <div key={opt} className="flex items-center space-x-3 p-4 rounded-xl border-2 border-gray-100 hover:bg-brand-blue-light/30 transition-colors">
-                          <Checkbox 
-                            id={opt} 
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                setValue("platforms", [...platforms, opt]);
-                              } else {
-                                setValue("platforms", platforms.filter((p) => p !== opt));
-                              }
-                            }}
-                            checked={platforms.includes(opt)}
-                          />
-                          <label htmlFor={opt} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer w-full">
-                            {opt}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* STEP 5: ACCOUNTS */}
-                {step === 5 && (
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-brand-blue-dark">A empresa já possui contas de anúncios configuradas?</h3>
-                    <RadioGroup onValueChange={(val) => setValue("ad_accounts_status", val)} className="grid gap-4">
-                      {["Sim, todas activas", "Sim, mas com problemas", "Não, precisamos de criar", "Não sei"].map((opt) => (
-                        <div key={opt}>
-                          <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
-                          <Label
-                            htmlFor={opt}
-                            className="flex items-center justify-between p-4 rounded-xl border-2 border-gray-100 bg-white hover:bg-brand-blue-light/30 hover:border-brand-blue/30 peer-data-[state=checked]:border-brand-blue peer-data-[state=checked]:bg-brand-blue-light/50 cursor-pointer transition-all"
-                          >
-                            {opt}
-                            <Check className="w-4 h-4 text-brand-blue opacity-0 peer-data-[state=checked]:opacity-100 transition-opacity" />
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  </div>
-                )}
-
-                {/* STEP 6: URGENCY */}
-                {step === 6 && (
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-brand-blue-dark">Que nível de urgência tem este projecto?</h3>
-                    <RadioGroup onValueChange={(val) => setValue("urgency", val)} className="grid gap-4">
-                      {["Preciso começar imediatamente", "Dentro de 30 dias", "Estou apenas a recolher informações"].map((opt) => (
-                        <div key={opt}>
-                          <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
-                          <Label
-                            htmlFor={opt}
-                            className="flex items-center justify-between p-4 rounded-xl border-2 border-gray-100 bg-white hover:bg-brand-blue-light/30 hover:border-brand-blue/30 peer-data-[state=checked]:border-brand-blue peer-data-[state=checked]:bg-brand-blue-light/50 cursor-pointer transition-all"
-                          >
-                            {opt}
-                            <Check className="w-4 h-4 text-brand-blue opacity-0 peer-data-[state=checked]:opacity-100 transition-opacity" />
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  </div>
-                )}
-
-                {/* STEP 7: DETAILS */}
-                {step === 7 && (
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-brand-blue-dark">Detalhes da Empresa</h3>
-                    <div className="space-y-6">
-                      <div>
-                        <Label>Qual é o sector de actividade da sua empresa?</Label>
-                        <Input {...register("sector")} placeholder="Ex: Tecnologia, Saúde, Educação..." className="h-12 bg-gray-50 border-gray-200" />
-                      </div>
-                      <div>
-                        <Label className="mb-2 block">Quantas pessoas trabalham actualmente na empresa?</Label>
-                        <RadioGroup onValueChange={(val) => setValue("team_size", val)} className="grid grid-cols-2 gap-4">
-                          {["1 a 5", "6 a 20", "21 a 50", "Mais de 50"].map((opt) => (
-                            <div key={opt}>
-                              <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
-                              <Label
-                                htmlFor={opt}
-                                className="flex items-center justify-center p-3 rounded-lg border-2 border-gray-100 bg-white hover:bg-brand-blue-light/30 hover:border-brand-blue/30 peer-data-[state=checked]:border-brand-blue peer-data-[state=checked]:bg-brand-blue-light/50 cursor-pointer transition-all text-center"
-                              >
-                                {opt}
-                              </Label>
-                            </div>
+                    {step === 1 && (
+                      <div className="space-y-6">
+                        <h3 className="text-2xl font-bold text-white">Objectivo Principal</h3>
+                        <RadioGroup onValueChange={(val) => setValue("objective", val)} className="grid gap-3">
+                          {["Gerar leads qualificadas", "Aumentar volume de vendas", "Brand Awareness", "Auditoria de Contas", "Recuperação de Acessos"].map((opt) => (
+                            <OptionItem key={opt} value={opt} label={opt} />
                           ))}
                         </RadioGroup>
                       </div>
-                    </div>
-                  </div>
-                )}
+                    )}
+                    
+                     {step === 2 && (
+                      <div className="space-y-6">
+                        <h3 className="text-2xl font-bold text-white">Histórico de Investimento</h3>
+                        <RadioGroup onValueChange={(val) => setValue("invests_in_ads", val)} className="grid gap-3">
+                          {["Sim, investimento recorrente", "Sim, esporadicamente", "Não, nunca investimos"].map((opt) => (
+                            <OptionItem key={opt} value={opt} label={opt} />
+                          ))}
+                        </RadioGroup>
+                      </div>
+                    )}
 
-                {/* STEP 8: ROLE */}
-                {step === 8 && (
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-brand-blue-dark">Quem será o principal ponto de contacto para o projecto?</h3>
-                    <RadioGroup onValueChange={(val) => setValue("contact_role", val)} className="grid gap-4">
-                      {["Director(a)", "CEO", "Responsável de Marketing", "Empreendedor / Proprietário", "Outro"].map((opt) => (
-                        <div key={opt}>
-                          <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
-                          <Label
-                            htmlFor={opt}
-                            className="flex items-center justify-between p-4 rounded-xl border-2 border-gray-100 bg-white hover:bg-brand-blue-light/30 hover:border-brand-blue/30 peer-data-[state=checked]:border-brand-blue peer-data-[state=checked]:bg-brand-blue-light/50 cursor-pointer transition-all"
-                          >
-                            {opt}
-                            <Check className="w-4 h-4 text-brand-blue opacity-0 peer-data-[state=checked]:opacity-100 transition-opacity" />
-                          </Label>
+                    {step === 3 && (
+                      <div className="space-y-6">
+                        <h3 className="text-2xl font-bold text-white">Budget Mensal (AKZ)</h3>
+                        <RadioGroup onValueChange={(val) => setValue("budget", val)} className="grid gap-3">
+                          {["< 150.000", "150.000 - 350.000", "350.000 - 800.000", "> 800.000", "A definir"].map((opt) => (
+                            <OptionItem key={opt} value={opt} label={opt} />
+                          ))}
+                        </RadioGroup>
+                      </div>
+                    )}
+
+                     {step === 4 && (
+                      <div className="space-y-6">
+                        <h3 className="text-2xl font-bold text-white">Canais de Interesse</h3>
+                        <div className="grid gap-3">
+                          {["Meta (FB/IG)", "Google Ads", "LinkedIn", "Não tenho certeza"].map((opt) => (
+                            <div key={opt} className="flex items-center space-x-3 p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+                              <Checkbox 
+                                id={opt} 
+                                className="border-white/20 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    setValue("platforms", [...platforms, opt]);
+                                  } else {
+                                    setValue("platforms", platforms.filter((p) => p !== opt));
+                                  }
+                                }}
+                                checked={platforms.includes(opt)}
+                              />
+                              <label htmlFor={opt} className="text-sm font-medium text-white cursor-pointer w-full">
+                                {opt}
+                              </label>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </RadioGroup>
-                  </div>
-                )}
+                      </div>
+                    )}
+                    
+                    {step >= 5 && step < 9 && (
+                       <div className="space-y-6">
+                         <h3 className="text-2xl font-bold text-white">Detalhes Adicionais</h3>
+                         {step === 5 && (
+                           <RadioGroup onValueChange={(val) => setValue("ad_accounts_status", val)} className="grid gap-3">
+                              <h4 className="text-gray-400 mb-2">Status das Contas de Anúncios</h4>
+                              {["Ativas e Saudáveis", "Com restrições/bloqueios", "Inexistentes", "Desconhecido"].map((opt) => (
+                                <OptionItem key={opt} value={opt} label={opt} />
+                              ))}
+                           </RadioGroup>
+                         )}
+                         {step === 6 && (
+                            <RadioGroup onValueChange={(val) => setValue("urgency", val)} className="grid gap-3">
+                              <h4 className="text-gray-400 mb-2">Urgência do Projeto</h4>
+                              {["Imediata", "30 dias", "Exploratório"].map((opt) => (
+                                <OptionItem key={opt} value={opt} label={opt} />
+                              ))}
+                           </RadioGroup>
+                         )}
+                          {step === 7 && (
+                             <div className="space-y-4">
+                                <Label className="text-gray-400">Setor de Atuação</Label>
+                                <Input {...register("sector")} className="bg-white/5 border-white/10 text-white focus:border-blue-500 h-12" placeholder="Ex: Tecnologia, Varejo..." />
+                                
+                                <Label className="text-gray-400 block mt-4">Tamanho da Equipe</Label>
+                                <RadioGroup onValueChange={(val) => setValue("team_size", val)} className="grid grid-cols-2 gap-3">
+                                  {["1-5", "6-20", "21-50", "50+"].map((opt) => (
+                                    <OptionItem key={opt} value={opt} label={opt} />
+                                  ))}
+                                </RadioGroup>
+                             </div>
+                         )}
+                          {step === 8 && (
+                           <RadioGroup onValueChange={(val) => setValue("contact_role", val)} className="grid gap-3">
+                              <h4 className="text-gray-400 mb-2">Seu Cargo</h4>
+                              {["C-Level / Diretor", "Gerente de Marketing", "Proprietário", "Outro"].map((opt) => (
+                                <OptionItem key={opt} value={opt} label={opt} />
+                              ))}
+                           </RadioGroup>
+                         )}
+                       </div>
+                    )}
 
-                {/* STEP 9: CALL ALIGNMENT */}
-                {step === 9 && (
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-bold text-brand-blue-dark">Está disposto(a) a agendar uma chamada para alinhamento antes de avançarmos?</h3>
-                     <RadioGroup onValueChange={(val) => setValue("call_alignment", val)} className="grid gap-4">
-                      {["Sim", "Não"].map((opt) => (
-                        <div key={opt}>
-                          <RadioGroupItem value={opt} id={opt} className="peer sr-only" />
-                          <Label
-                            htmlFor={opt}
-                            className="flex items-center justify-between p-4 rounded-xl border-2 border-gray-100 bg-white hover:bg-brand-blue-light/30 hover:border-brand-blue/30 peer-data-[state=checked]:border-brand-blue peer-data-[state=checked]:bg-brand-blue-light/50 cursor-pointer transition-all"
-                          >
-                            {opt}
-                            <Check className="w-4 h-4 text-brand-blue opacity-0 peer-data-[state=checked]:opacity-100 transition-opacity" />
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  </div>
-                )}
+                    {step === 9 && (
+                       <div className="space-y-6">
+                        <h3 className="text-2xl font-bold text-white">Confirmação</h3>
+                        <p className="text-gray-400">Gostaria de agendar uma reunião de alinhamento?</p>
+                         <RadioGroup onValueChange={(val) => setValue("call_alignment", val)} className="grid gap-3">
+                            {["Sim, vamos agendar", "Não, prefiro email"].map((opt) => (
+                              <OptionItem key={opt} value={opt} label={opt} />
+                            ))}
+                         </RadioGroup>
+                       </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
-              </motion.div>
-            </AnimatePresence>
-            
-            <div className="flex justify-between pt-8 mt-auto border-t border-gray-100">
-              <Button 
-                variant="ghost" 
-                onClick={onBack} 
-                disabled={step === 0}
-                className="text-gray-500 hover:text-brand-blue"
-              >
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                Voltar
-              </Button>
-              
-              {step === STEPS.length - 1 ? (
-                <Button onClick={handleSubmit(onSubmit)} className="bg-brand-blue hover:bg-blue-700 text-white px-8">
-                  Enviar Pedido <Check className="w-4 h-4 ml-2" />
+              <div className="flex justify-between pt-8 border-t border-white/5 mt-auto">
+                <Button 
+                  variant="ghost" 
+                  onClick={onBack} 
+                  disabled={step === 0}
+                  className="text-gray-400 hover:text-white hover:bg-white/5"
+                >
+                  <ChevronLeft className="w-4 h-4 mr-2" />
+                  Voltar
                 </Button>
-              ) : (
-                <Button onClick={onNext} className="bg-brand-blue hover:bg-blue-700 text-white px-8">
-                  Próximo <ChevronRight className="w-4 h-4 ml-2" />
-                </Button>
-              )}
+                
+                {step === STEPS.length - 1 ? (
+                  <Button onClick={handleSubmit(onSubmit)} className="bg-blue-600 hover:bg-blue-500 text-white px-8 rounded-full shadow-[0_0_20px_rgba(37,99,235,0.4)]">
+                    Processar Dados <Terminal className="w-4 h-4 ml-2" />
+                  </Button>
+                ) : (
+                  <Button onClick={onNext} className="bg-white text-black hover:bg-gray-200 px-8 rounded-full">
+                    Continuar <ChevronRight className="w-4 h-4 ml-2" />
+                  </Button>
+                )}
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </section>
+  );
+}
+
+function OptionItem({ value, label }: { value: string, label: string }) {
+  return (
+    <div>
+      <RadioGroupItem value={value} id={value} className="peer sr-only" />
+      <Label
+        htmlFor={value}
+        className="flex items-center justify-between p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-blue-500/50 peer-data-[state=checked]:border-blue-500 peer-data-[state=checked]:bg-blue-500/10 cursor-pointer transition-all group"
+      >
+        <span className="text-white group-hover:text-blue-200 transition-colors">{label}</span>
+        <Check className="w-4 h-4 text-blue-500 opacity-0 peer-data-[state=checked]:opacity-100 transition-all scale-0 peer-data-[state=checked]:scale-100" />
+      </Label>
+    </div>
   );
 }

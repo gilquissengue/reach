@@ -1,37 +1,40 @@
 import { motion } from "framer-motion";
-import { CheckCircle2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckCircle2, ArrowUpRight } from "lucide-react";
 
 const SERVICES = [
   {
-    title: "Gestão de campanhas Meta Ads",
-    subtitle: "Facebook e Instagram",
-    features: ["Segmentação avançada", "Criativos de alta conversão", "Retargeting estratégico"]
+    title: "Meta Ads Intelligence",
+    features: ["Segmentação Comportamental", "Criativos Dinâmicos", "Retargeting Cross-Platform"],
+    gradient: "from-blue-600 to-blue-900"
   },
   {
-    title: "Gestão de campanhas Google Ads",
-    subtitle: "Search, Display, YouTube, Remarketing",
-    features: ["Palavras-chave de intenção", "Otimização de CTR", "Foco em leads qualificados"]
+    title: "Google Ecosystem",
+    features: ["Search Intent Mining", "YouTube Brand Lift", "Display Programático"],
+    gradient: "from-indigo-600 to-purple-900"
   },
   {
-    title: "Suporte e optimização contínua",
-    subtitle: "Monitorização diária, relatórios claros",
-    features: ["Dashboard em tempo real", "Reuniões de alinhamento", "Ajustes rápidos"]
+    title: "Conversion Ops",
+    features: ["CRO & Landing Pages", "Automação de CRM", "Dashboards em Tempo Real"],
+    gradient: "from-emerald-600 to-teal-900"
   }
 ];
 
 export default function Services() {
   return (
-    <section id="servicos" className="bg-gray-50 py-24">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16">
-          <div>
-            <span className="text-brand-blue font-semibold tracking-wider uppercase text-sm">Nossas Soluções</span>
-            <h2 className="text-4xl font-bold font-display text-brand-blue-dark mt-2">O que fazemos pelo teu negócio</h2>
-          </div>
+    <section id="servicos" className="bg-background py-32 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px]" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px]" />
+
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="mb-20">
+          <span className="text-blue-500 font-medium tracking-widest uppercase text-xs mb-2 block">Capabilities</span>
+          <h2 className="text-4xl md:text-5xl font-bold font-display text-white">
+            Ecossistema de Performance
+          </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6">
           {SERVICES.map((service, i) => (
             <motion.div
               key={i}
@@ -39,23 +42,34 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
+              className="group relative h-[400px] glass rounded-2xl p-1 overflow-hidden transition-all duration-500 hover:border-blue-500/50"
             >
-              <Card className="h-full border-0 shadow-md hover:shadow-xl transition-all duration-300 bg-white">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-xl font-bold text-brand-blue-dark">{service.title}</CardTitle>
-                  <p className="text-brand-blue font-medium">{service.subtitle}</p>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10" />
+              
+              <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-700`} />
+
+              <div className="relative z-20 h-full p-8 flex flex-col justify-between">
+                <div>
+                  <div className="w-12 h-12 bg-white/5 rounded-lg mb-6 flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
+                    <ArrowUpRight className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-6">{service.title}</h3>
+                  <ul className="space-y-4">
                     {service.features.map((feature, j) => (
-                      <li key={j} className="flex items-center text-gray-600 text-sm">
-                        <CheckCircle2 className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+                      <li key={j} className="flex items-center text-gray-400 text-sm group-hover:text-gray-300 transition-colors">
+                        <CheckCircle2 className="w-4 h-4 text-blue-500 mr-3" />
                         {feature}
                       </li>
                     ))}
                   </ul>
-                </CardContent>
-              </Card>
+                </div>
+                
+                <div className="translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                   <span className="text-blue-400 text-sm font-medium flex items-center gap-2 cursor-pointer">
+                     Explorar Solução <ArrowUpRight className="w-4 h-4" />
+                   </span>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
