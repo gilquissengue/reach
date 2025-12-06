@@ -1,13 +1,48 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Terminal } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import heroImage from "@assets/generated_images/minimalist_dark_futuristic_abstract_landscape_with_deep_blue_geometric_accents.png";
 import GraphicBackground from "./GraphicBackground";
+
+const themes = [
+  {
+    title: "CRESCIMENTO",
+    subtitle: "EXPONENCIAL",
+    description: "Transformamos complexidade digital em crescimento mensurável. Estratégias de elite para marcas que exigem resultados."
+  },
+  {
+    title: "PERFORMANCE",
+    subtitle: "MAXIMIZADA",
+    description: "Otimizamos cada ponto de contato para converter visitantes em clientes. Resultados que superam expectativas."
+  },
+  {
+    title: "INOVAÇÃO",
+    subtitle: "CONTÍNUA",
+    description: "Tecnologia de ponta e estratégias avançadas para manter sua marca à frente da concorrência."
+  },
+  {
+    title: "RESULTADOS",
+    subtitle: "COMPROVADOS",
+    description: "Dados reais, métricas transparentes e ROI mensurável. Cada investimento gera retorno tangível."
+  }
+];
 
 export default function Hero() {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 1000], [0, 400]);
   const opacity = useTransform(scrollY, [0, 500], [1, 0]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % themes.length);
+    }, 25000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentTheme = themes[currentIndex];
 
   return (
     <section className="relative h-screen min-h-[800px] flex items-end justify-start overflow-hidden bg-[#020617]">
@@ -35,20 +70,24 @@ export default function Hero() {
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-4xl space-y-8"
         >
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-blue-500/20 bg-blue-500/5 backdrop-blur-md text-xs font-mono text-blue-400 mb-4 hover:bg-blue-500/10 transition-colors cursor-default">
-            <Terminal className="w-3 h-3" />
-            <span className="tracking-widest">SYSTEM_READY :: v2.5.0</span>
-          </div>
-          
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-display tracking-tighter text-white leading-[0.9]">
-            DATA DRIVEN <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600 text-glow animate-pulse">REVENUE</span>
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-gray-400 font-light max-w-xl leading-relaxed font-sans">
-            Transformamos complexidade digital em crescimento mensurável. 
-            Estratégias de elite para marcas que exigem resultados.
-          </p>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold font-display tracking-tight text-white leading-[1.1]">
+                {currentTheme.title} <br />
+                <span className="text-gray-200">{currentTheme.subtitle}</span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-gray-400 font-light max-w-xl leading-relaxed font-sans mt-4">
+                {currentTheme.description}
+              </p>
+            </motion.div>
+          </AnimatePresence>
           
           <div className="flex pt-6">
             <Button 
@@ -63,10 +102,10 @@ export default function Hero() {
 
       {/* Scroll Indicator */}
       <motion.div 
-        style={{ opacity }}
-        className="absolute bottom-12 right-12 flex flex-col items-center gap-3 text-gray-500"
+        style={{ opacity, right: 'calc(3rem + 4%)' }}
+        className="absolute bottom-12 flex flex-col items-center gap-3 text-gray-500"
       >
-        <span className="text-[10px] uppercase tracking-[0.3em] font-mono animate-pulse">Scroll to Initialize</span>
+        <span className="text-[10px] uppercase tracking-[0.3em] font-mono animate-pulse">Role para explorar</span>
         <motion.div 
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}

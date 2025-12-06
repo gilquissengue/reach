@@ -1,28 +1,24 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { Target, Users, BarChart3, ArrowRight } from "lucide-react";
 
 const STEPS = [
   {
     id: "01",
-    icon: Target,
     title: "Atração Inteligente",
     description: "Utilizamos algoritmos proprietários para identificar e captar o público mais qualificado via paid media e conteúdo estratégico.",
     color: "from-blue-500/20 to-blue-600/5"
   },
   {
     id: "02",
-    icon: Users,
     title: "Venda Transacional",
     description: "Implementamos funis de conversão rápida para ofertas de entrada (low ticket), validando o interesse e criando confiança imediata.",
-    color: "from-purple-500/20 to-purple-600/5"
+    color: "from-blue-500/20 to-blue-600/5"
   },
   {
     id: "03",
-    icon: BarChart3,
     title: "Escala Relacional",
     description: "Maximização do LTV através de estratégias de upsell e retenção, transformando clientes pontuais em receita recorrente.",
-    color: "from-cyan-500/20 to-cyan-600/5"
+    color: "from-blue-500/20 to-blue-600/5"
   }
 ];
 
@@ -64,35 +60,23 @@ function StickyCard({ step, index, total }: { step: any, index: number, total: n
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="sticky top-32 glass rounded-2xl p-8 md:p-12 border border-white/10 overflow-hidden group"
+      className={`sticky top-32 glass rounded-2xl p-8 md:p-12 overflow-hidden group ${index === 0 ? 'border border-white/10' : ''}`}
       style={{ 
         marginBottom: `${(total - index - 1) * 20}px`,
         zIndex: index 
       }}
     >
-      <div className={`absolute inset-0 bg-gradient-to-br ${step.color} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
+      <div className={`absolute inset-0 bg-gradient-to-br ${step.color}`} style={{ opacity: 0.8 }} />
       
-      <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
-        <div className="space-y-6">
-          <span className="text-6xl font-display font-bold text-white/5 group-hover:text-white/10 transition-colors">
-            {step.id}
-          </span>
-          <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform duration-500">
-            <step.icon className="w-6 h-6" />
-          </div>
+      <div className="relative z-10 grid grid-cols-[auto_1fr] gap-8 items-start">
+        <span className="text-8xl font-display font-bold text-white/5 group-hover:text-white transition-colors duration-300">
+          {step.id}
+        </span>
+        <div className="space-y-4 pt-2">
           <h3 className="text-3xl font-bold text-white">{step.title}</h3>
-          <p className="text-gray-400 text-lg leading-relaxed">
+          <p className="text-gray-400 text-xl md:text-2xl leading-relaxed">
             {step.description}
           </p>
-        </div>
-        
-        <div className="relative h-[300px] w-full bg-black/20 rounded-xl overflow-hidden border border-white/5">
-           {/* Abstract visualization for each step */}
-           <div className="absolute inset-0 flex items-center justify-center">
-             <div className="w-32 h-32 rounded-full border border-blue-500/30 animate-[spin_10s_linear_infinite]" />
-             <div className="absolute w-24 h-24 rounded-full border border-white/10 animate-[spin_15s_linear_infinite_reverse]" />
-             <div className="absolute w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_20px_rgba(59,130,246,1)]" />
-           </div>
         </div>
       </div>
     </motion.div>

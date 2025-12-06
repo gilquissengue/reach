@@ -1,14 +1,14 @@
 import { motion } from "framer-motion";
 
 const PARTNERS = [
-  "Google Partner", "Meta Business", "LinkedIn Marketing", "HubSpot", "Salesforce", "Shopify Plus"
+  "Empresa 1", "Empresa 2", "Empresa 3", "Empresa 4", "Empresa 5", "Empresa 6"
 ];
 
 export default function Partners() {
   return (
     <section id="parceiros" className="bg-[#020617] py-20 border-t border-white/5 overflow-hidden">
       <div className="container mx-auto px-6 mb-12 text-center">
-        <p className="text-gray-500 font-mono text-xs uppercase tracking-[0.2em]">Trusted by Industry Leaders</p>
+        <p className="text-gray-500 font-mono text-xs uppercase tracking-[0.2em]">Empresas que confiam em nós</p>
       </div>
       
       <div className="relative flex overflow-x-hidden group">

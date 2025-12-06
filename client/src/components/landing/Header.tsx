@@ -28,8 +28,12 @@ export default function Header() {
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         <Link href="/">
-          <a className={`font-display font-bold tracking-tighter text-white flex items-center gap-2 group transition-all duration-500 ${scrolled ? "text-xl" : "text-3xl"}`}>
-            REACH <span className={`bg-blue-500 rounded-full animate-pulse shadow-[0_0_10px_#3b82f6] transition-all duration-500 ${scrolled ? "w-1 h-1" : "w-2 h-2"}`}></span>
+          <a className="flex items-center group transition-all duration-500">
+            <img 
+              src="/logo.png" 
+              alt="REACH Performance Marketing" 
+              className={`transition-all duration-500 object-contain brightness-0 invert ${scrolled ? "h-20 max-w-[120px]" : "h-16 max-w-[200px]"}`}
+            />
           </a>
         </Link>
 
