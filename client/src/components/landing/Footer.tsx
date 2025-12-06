@@ -74,12 +74,25 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-600 font-mono">
-          <div>
-            © {new Date().getFullYear()} REACH Performance Marketing. All systems operational.
+          <div className="flex flex-col gap-2">
+            <div>
+              © {new Date().getFullYear()} REACH Performance Marketing. Todos os sistemas operacionais.
+            </div>
+            <div className="text-gray-500">
+              Desenvolvido pela{" "}
+              <a 
+                href="https://wa.me/244923101084?text=Olá!%20Vim%20do%20site%20REACH%20Performance%20Marketing%20e%20gostaria%20de%20saber%20mais%20sobre%20os%20serviços%20de%20desenvolvimento." 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-blue-400 transition-colors underline decoration-blue-400/50 hover:decoration-blue-400"
+              >
+                nuvex
+              </a>
+            </div>
           </div>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-white transition-colors">Política de Privacidade</a>
+            <a href="#" className="hover:text-white transition-colors">Termos de Serviço</a>
           </div>
         </div>
       </div>

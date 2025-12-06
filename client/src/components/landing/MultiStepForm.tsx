@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronRight, ChevronLeft, Check, Terminal, Loader2, Send } from "lucide-react";
+import { ChevronRight, ChevronLeft, Check, Loader2, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import confetti from "canvas-confetti";
 
@@ -31,16 +31,16 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const STEPS = [
-  { id: 'contact', title: 'Start' },
-  { id: 'objective', title: 'Target' },
-  { id: 'ads_history', title: 'History' },
-  { id: 'budget', title: 'Budget' },
-  { id: 'platforms', title: 'Channels' },
+  { id: 'contact', title: 'Início' },
+  { id: 'objective', title: 'Objetivo' },
+  { id: 'ads_history', title: 'Histórico' },
+  { id: 'budget', title: 'Orçamento' },
+  { id: 'platforms', title: 'Canais' },
   { id: 'accounts', title: 'Status' },
-  { id: 'urgency', title: 'Timeline' },
-  { id: 'details', title: 'Profile' },
-  { id: 'role', title: 'Role' },
-  { id: 'finish', title: 'Finish' },
+  { id: 'urgency', title: 'Cronograma' },
+  { id: 'details', title: 'Perfil' },
+  { id: 'role', title: 'Cargo' },
+  { id: 'finish', title: 'Finalizar' },
 ];
 
 export default function MultiStepForm() {
@@ -148,10 +148,6 @@ export default function MultiStepForm() {
             <div className="glass rounded-2xl p-8 md:p-12 border border-white/10 min-h-[500px] flex flex-col relative overflow-hidden shadow-2xl">
               {/* Decorative scanline */}
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-20 animate-[scan_2s_linear_infinite]" />
-              
-              <div className="absolute top-4 right-4 font-mono text-[10px] text-gray-600">
-                SECURE_CONNECTION_ESTABLISHED
-              </div>
 
               <div className="flex-1">
                 <AnimatePresence mode="wait">
@@ -166,10 +162,6 @@ export default function MultiStepForm() {
                     {/* Render Steps */}
                     {step === 0 && (
                       <div className="space-y-6">
-                        <div className="flex items-center gap-2 text-blue-400 mb-6">
-                          <Terminal className="w-5 h-5" />
-                          <span className="text-xs font-mono uppercase tracking-wider">Initialize_User_Data</span>
-                        </div>
                         <h3 className="text-3xl font-bold text-white font-display">Dados de Contacto</h3>
                         <div className="grid gap-6">
                           <div className="group">

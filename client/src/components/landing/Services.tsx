@@ -3,18 +3,18 @@ import { CheckCircle2, ArrowUpRight } from "lucide-react";
 
 const SERVICES = [
   {
-    title: "Meta Ads Intelligence",
-    features: ["Segmentação Comportamental", "Criativos Dinâmicos", "Retargeting Cross-Platform"],
+    title: "Inteligência Meta Ads",
+    features: ["Segmentação Comportamental", "Criativos Dinâmicos", "Retargeting Multiplataforma"],
     gradient: "from-blue-600 to-blue-900"
   },
   {
-    title: "Google Ecosystem",
-    features: ["Search Intent Mining", "YouTube Brand Lift", "Display Programático"],
+    title: "Ecossistema Google",
+    features: ["Mineração de Intenção de Busca", "Elevação de Marca no YouTube", "Display Programático"],
     gradient: "from-indigo-600 to-purple-900"
   },
   {
-    title: "Conversion Ops",
-    features: ["CRO & Landing Pages", "Automação de CRM", "Dashboards em Tempo Real"],
+    title: "Operações de Conversão",
+    features: ["CRO e Páginas de Destino", "Automação de CRM", "Dashboards em Tempo Real"],
     gradient: "from-emerald-600 to-teal-900"
   }
 ];
@@ -28,7 +28,7 @@ export default function Services() {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="mb-20">
-          <span className="text-blue-500 font-medium tracking-widest uppercase text-xs mb-2 block">Capabilities</span>
+          <span className="text-blue-500 font-medium tracking-widest uppercase text-xs mb-2 block">Capacidades</span>
           <h2 className="text-4xl md:text-5xl font-bold font-display text-white">
             Ecossistema de Performance
           </h2>
@@ -45,8 +45,6 @@ export default function Services() {
               className="group relative h-[400px] glass rounded-2xl p-1 overflow-hidden transition-all duration-500 hover:border-blue-500/50"
             >
               <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10" />
-              
-              <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-700`} />
 
               <div className="relative z-20 h-full p-8 flex flex-col justify-between">
                 <div>

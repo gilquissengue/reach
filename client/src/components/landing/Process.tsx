@@ -59,7 +59,11 @@ function StickyCard({ step, index, total }: { step: any, index: number, total: n
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      transition={{ 
+        duration: 1.2, 
+        delay: index * 0.2,
+        ease: [0.25, 0.1, 0.25, 1]
+      }}
       className={`sticky top-32 glass rounded-2xl p-8 md:p-12 overflow-hidden group ${index === 0 ? 'border border-white/10' : ''}`}
       style={{ 
         marginBottom: `${(total - index - 1) * 20}px`,
@@ -69,7 +73,7 @@ function StickyCard({ step, index, total }: { step: any, index: number, total: n
       <div className={`absolute inset-0 bg-gradient-to-br ${step.color}`} style={{ opacity: 0.8 }} />
       
       <div className="relative z-10 grid grid-cols-[auto_1fr] gap-8 items-start">
-        <span className="text-8xl font-display font-bold text-white/5 group-hover:text-white transition-colors duration-300">
+        <span className="text-8xl font-display font-bold text-white/5 group-hover:text-white transition-colors duration-700 ease-out">
           {step.id}
         </span>
         <div className="space-y-4 pt-2">

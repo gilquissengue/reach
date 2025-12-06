@@ -4,7 +4,7 @@ import path from 'path';
 
 /**
  * Vite plugin that updates og:image and twitter:image meta tags
- * to point to the app's opengraph image with the correct Replit domain.
+ * to point to the app's opengraph image with the correct deployment domain.
  */
 export function metaImagesPlugin(): Plugin {
   return {
@@ -12,7 +12,32 @@ export function metaImagesPlugin(): Plugin {
     transformIndexHtml(html) {
       const baseUrl = getDeploymentUrl();
       if (!baseUrl) {
-        log('[meta-images] no Replit deployment domain found, skipping meta tag updates');
+        // Use relative path if no deployment URL is found
+        const publicDir = path.resolve(process.cwd(), 'client', 'public');
+        const opengraphPngPath = path.join(publicDir, 'opengraph.png');
+        const opengraphJpgPath = path.join(publicDir, 'opengraph.jpg');
+        const opengraphJpegPath = path.join(publicDir, 'opengraph.jpeg');
+
+        let imageExt: string | null = null;
+        if (fs.existsSync(opengraphPngPath)) {
+          imageExt = 'png';
+        } else if (fs.existsSync(opengraphJpgPath)) {
+          imageExt = 'jpg';
+        } else if (fs.existsSync(opengraphJpegPath)) {
+          imageExt = 'jpeg';
+        }
+
+        if (imageExt) {
+          html = html.replace(
+            /<meta\s+property="og:image"\s+content="[^"]*"\s*\/>/g,
+            `<meta property="og:image" content="/opengraph.${imageExt}" />`
+          );
+
+          html = html.replace(
+            /<meta\s+name="twitter:image"\s+content="[^"]*"\s*\/>/g,
+            `<meta name="twitter:image" content="/opengraph.${imageExt}" />`
+          );
+        }
         return html;
       }
 
@@ -56,16 +81,23 @@ export function metaImagesPlugin(): Plugin {
 }
 
 function getDeploymentUrl(): string | null {
-  if (process.env.REPLIT_INTERNAL_APP_DOMAIN) {
-    const url = `https://${process.env.REPLIT_INTERNAL_APP_DOMAIN}`;
-    log('[meta-images] using internal app domain:', url);
+  // Check for Vercel deployment URL
+  if (process.env.VERCEL_URL) {
+    const url = `https://${process.env.VERCEL_URL}`;
+    log('[meta-images] using Vercel URL:', url);
     return url;
   }
 
-  if (process.env.REPLIT_DEV_DOMAIN) {
-    const url = `https://${process.env.REPLIT_DEV_DOMAIN}`;
-    log('[meta-images] using dev domain:', url);
+  // Check for custom domain in Vercel
+  if (process.env.NEXT_PUBLIC_VERCEL_URL) {
+    const url = `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
+    log('[meta-images] using Vercel public URL:', url);
     return url;
+  }
+
+  // Default to reach.ao if available
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://reach.ao';
   }
 
   return null;
