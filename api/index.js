@@ -1,15 +1,115 @@
 // Vercel serverless function handler for Express app
-// FORCE HTML response - NO DOWNLOADS
+// CRITICAL: Prevent file downloads - force HTML rendering
 
 const handler = async (req, res) => {
-  // ABSOLUTE FIRST: Force HTML content type BEFORE anything else
-  res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.setHeader('X-Content-Type-Options', 'nosniff');
+  // Store original methods BEFORE any interception
+  const originalSetHeader = res.setHeader.bind(res);
+  const originalWriteHead = res.writeHead.bind(res);
+  const originalWrite = res.write.bind(res);
+  const originalEnd = res.end.bind(res);
+  const originalSend = res.send ? res.send.bind(res) : null;
+  const originalSendFile = res.sendFile ? res.sendFile.bind(res) : null;
   
-  // Remove ANY download headers immediately
-  try {
-    res.removeHeader('Content-Disposition');
-  } catch (e) {}
+  // Track if this is an HTML page request
+  const isHtmlRequest = !req.path || req.path === '/' || req.path === '/index.html' || 
+    (!req.path.includes('.') && !req.path.startsWith('/api') && !req.path.startsWith('/assets'));
+  
+  // Intercept setHeader to block Content-Disposition and force HTML for root paths
+  res.setHeader = function(name, value) {
+    const lowerName = name.toLowerCase();
+    
+    // COMPLETELY BLOCK Content-Disposition
+    if (lowerName === 'content-disposition') {
+      return this;
+    }
+    
+    // Force HTML content type for HTML requests
+    if (isHtmlRequest && lowerName === 'content-type' && typeof value === 'string') {
+      if (!value.includes('text/html')) {
+        value = 'text/html; charset=utf-8';
+      }
+    }
+    
+    return originalSetHeader(name, value);
+  };
+  
+  // Intercept writeHead
+  res.writeHead = function(statusCode, statusMessage, headers) {
+    let finalHeaders = headers;
+    
+    if (typeof statusMessage === 'object' && !headers) {
+      finalHeaders = statusMessage;
+      statusMessage = undefined;
+    }
+    
+    if (!finalHeaders) finalHeaders = {};
+    
+    // Remove Content-Disposition
+    delete finalHeaders['Content-Disposition'];
+    delete finalHeaders['content-disposition'];
+    
+    // Force HTML for HTML requests
+    if (isHtmlRequest) {
+      finalHeaders['Content-Type'] = 'text/html; charset=utf-8';
+      finalHeaders['X-Content-Type-Options'] = 'nosniff';
+    }
+    
+    return originalWriteHead.call(this, statusCode, statusMessage, finalHeaders);
+  };
+  
+  // Intercept write
+  res.write = function(chunk, encoding) {
+    if (!res.headersSent && isHtmlRequest) {
+      originalSetHeader('Content-Type', 'text/html; charset=utf-8');
+      originalSetHeader('X-Content-Type-Options', 'nosniff');
+      try {
+        res.removeHeader('Content-Disposition');
+      } catch (e) {}
+    }
+    return originalWrite.call(this, chunk, encoding);
+  };
+  
+  // Intercept end
+  res.end = function(chunk, encoding) {
+    if (!res.headersSent) {
+      if (isHtmlRequest) {
+        originalSetHeader('Content-Type', 'text/html; charset=utf-8');
+        originalSetHeader('X-Content-Type-Options', 'nosniff');
+      }
+      try {
+        res.removeHeader('Content-Disposition');
+      } catch (e) {}
+    }
+    return originalEnd.call(this, chunk, encoding);
+  };
+  
+  // Intercept send
+  if (originalSend) {
+    res.send = function(body) {
+      if (isHtmlRequest) {
+        originalSetHeader('Content-Type', 'text/html; charset=utf-8');
+        originalSetHeader('X-Content-Type-Options', 'nosniff');
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
+      return originalSend.call(this, body);
+    };
+  }
+  
+  // Intercept sendFile
+  if (originalSendFile) {
+    res.sendFile = function(filePath, options, callback) {
+      if (isHtmlRequest) {
+        originalSetHeader('Content-Type', 'text/html; charset=utf-8');
+        originalSetHeader('X-Content-Type-Options', 'nosniff');
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
+      return originalSendFile.call(this, filePath, options, callback);
+    };
+  }
   
   try {
     // Set environment variables
@@ -22,20 +122,23 @@ const handler = async (req, res) => {
       serverModule = require('../dist/index.cjs');
     } catch (error) {
       console.error('Failed to require server module:', error);
-      // Send HTML error page
-      return res.status(500).end(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Build Error</title>
-          </head>
-          <body>
-            <h1>Build Error</h1>
-            <p>Server module not found.</p>
-          </body>
-        </html>
-      `);
+      if (!res.headersSent) {
+        originalSetHeader('Content-Type', 'text/html; charset=utf-8');
+        return originalEnd(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>Build Error</title>
+            </head>
+            <body>
+              <h1>Build Error</h1>
+              <p>Server module not found.</p>
+            </body>
+          </html>
+        `);
+      }
+      return;
     }
     
     // Get the handler function
@@ -43,56 +146,23 @@ const handler = async (req, res) => {
     
     if (typeof appHandler !== 'function') {
       console.error('Server module does not export a function');
-      return res.status(500).end(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Server Error</title>
-          </head>
-          <body>
-            <h1>Server Error</h1>
-          </body>
-        </html>
-      `);
+      if (!res.headersSent) {
+        originalSetHeader('Content-Type', 'text/html; charset=utf-8');
+        return originalEnd(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>Server Error</title>
+            </head>
+            <body>
+              <h1>Server Error</h1>
+            </body>
+          </html>
+        `);
+      }
+      return;
     }
-    
-    // Override response methods to GUARANTEE HTML headers
-    const originalWriteHead = res.writeHead;
-    const originalEnd = res.end;
-    const originalSend = res.send;
-    
-    // Override writeHead
-    res.writeHead = function(statusCode, statusMessage, headers) {
-      // Force HTML headers
-      if (!headers) headers = {};
-      if (typeof statusMessage === 'object') {
-        headers = statusMessage;
-        statusMessage = undefined;
-      }
-      
-      headers['Content-Type'] = 'text/html; charset=utf-8';
-      headers['X-Content-Type-Options'] = 'nosniff';
-      delete headers['Content-Disposition'];
-      
-      return originalWriteHead.call(this, statusCode, statusMessage, headers);
-    };
-    
-    // Override send
-    res.send = function(body) {
-      this.setHeader('Content-Type', 'text/html; charset=utf-8');
-      this.removeHeader('Content-Disposition');
-      return originalSend.call(this, body);
-    };
-    
-    // Override end
-    res.end = function(chunk, encoding) {
-      if (!this.headersSent) {
-        this.setHeader('Content-Type', 'text/html; charset=utf-8');
-        this.removeHeader('Content-Disposition');
-      }
-      return originalEnd.call(this, chunk, encoding);
-    };
     
     // Call the Express app handler
     await appHandler(req, res);
@@ -102,7 +172,8 @@ const handler = async (req, res) => {
     console.error(error.stack);
     
     if (!res.headersSent) {
-      return res.status(500).end(`
+      originalSetHeader('Content-Type', 'text/html; charset=utf-8');
+      return originalEnd(`
         <!DOCTYPE html>
         <html>
           <head>
@@ -111,7 +182,7 @@ const handler = async (req, res) => {
           </head>
           <body>
             <h1>Internal Server Error</h1>
-            <p>${error.message}</p>
+            <p>${String(error.message).replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
           </body>
         </html>
       `);
