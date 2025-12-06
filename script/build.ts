@@ -68,6 +68,21 @@ async function buildAll() {
   const staticSource = path.resolve("dist", "public");
   if (existsSync(staticSource)) {
     console.log(`✓ Static files built at: ${staticSource}`);
+    
+    // Create empty 'build' directory to satisfy Vercel's outputDirectory check
+    // The actual files are served via serverless function from dist/public
+    try {
+      await mkdir("build", { recursive: true });
+      // Create a .gitkeep file to ensure the directory exists
+      const gitkeepPath = path.join("build", ".gitkeep");
+      if (!existsSync(gitkeepPath)) {
+        await require("fs/promises").writeFile(gitkeepPath, "");
+      }
+      console.log("✓ Created build directory for Vercel");
+    } catch (err) {
+      // Ignore errors - not critical
+      console.warn("Could not create build directory:", err);
+    }
   }
 }
 
