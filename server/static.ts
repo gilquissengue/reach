@@ -42,64 +42,77 @@ export function serveStatic(app: Express) {
     return;
   }
 
-  // Middleware to ensure Content-Type is set for all responses
-  app.use((req, res, next) => {
-    // Store original sendFile
-    const originalSendFile = res.sendFile;
-    
-    // Override sendFile to always set Content-Type for HTML
-    res.sendFile = function(filePath: string, options?: any, callback?: any) {
-      if (filePath.endsWith('.html') || filePath.endsWith('.htm')) {
-        res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      }
-      return originalSendFile.call(this, filePath, options, callback);
-    };
-    
-    next();
-  });
-
   // Serve static files with proper headers
   app.use(express.static(staticPath, {
     setHeaders: (res, filePath) => {
       // Set Content-Type for various file types
-      if (filePath.endsWith('.html') || filePath.endsWith('.htm')) {
+      const ext = path.extname(filePath).toLowerCase();
+      if (ext === '.html' || ext === '.htm') {
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      } else if (filePath.endsWith('.js')) {
+      } else if (ext === '.js') {
         res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-      } else if (filePath.endsWith('.css')) {
+      } else if (ext === '.css') {
         res.setHeader('Content-Type', 'text/css; charset=utf-8');
-      } else if (filePath.endsWith('.json')) {
+      } else if (ext === '.json') {
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
       }
-      // Prevent download - ensure no Content-Disposition header
-      res.removeHeader('Content-Disposition');
+      // Prevent download - remove Content-Disposition if it exists
+      try {
+        res.removeHeader('Content-Disposition');
+      } catch (e) {
+        // Ignore if header doesn't exist
+      }
     }
   }));
 
   // fall through to index.html if the file doesn't exist (SPA routing)
-  app.use("*", (req, res) => {
-    const indexPath = path.resolve(staticPath, "index.html");
-    if (fs.existsSync(indexPath)) {
-      // Explicitly set all necessary headers
-      res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      res.setHeader('X-Content-Type-Options', 'nosniff');
-      // Ensure no download header
-      res.removeHeader('Content-Disposition');
-      
-      res.sendFile(indexPath, {
-        headers: {
-          'Content-Type': 'text/html; charset=utf-8'
-        }
-      }, (err) => {
-        if (err) {
-          console.error('Error sending index.html:', err);
-          if (!res.headersSent) {
-            res.status(500).setHeader('Content-Type', 'text/html; charset=utf-8').send('Internal Server Error');
-          }
-        }
-      });
-    } else {
-      res.status(404).setHeader('Content-Type', 'text/html; charset=utf-8').send("Not found");
+  app.use("*", (req, res, next) => {
+    // Skip if it's an API route
+    if (req.path.startsWith('/api/')) {
+      return next();
     }
+    
+    const indexPath = path.resolve(staticPath, "index.html");
+    
+    if (!fs.existsSync(indexPath)) {
+      return res.status(404).setHeader('Content-Type', 'text/html; charset=utf-8').send(`
+        <html>
+          <head><title>Not Found</title></head>
+          <body>
+            <h1>404 Not Found</h1>
+            <p>The requested page could not be found.</p>
+          </body>
+        </html>
+      `);
+    }
+    
+    // Explicitly set all necessary headers before sending
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    
+    // Ensure no download header
+    try {
+      res.removeHeader('Content-Disposition');
+    } catch (e) {
+      // Ignore if header doesn't exist
+    }
+    
+    // Send the file
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        console.error('Error sending index.html:', err);
+        if (!res.headersSent) {
+          res.status(500).setHeader('Content-Type', 'text/html; charset=utf-8').send(`
+            <html>
+              <head><title>Server Error</title></head>
+              <body>
+                <h1>Internal Server Error</h1>
+                <p>Failed to load page.</p>
+              </body>
+            </html>
+          `);
+        }
+      }
+    });
   });
 }
