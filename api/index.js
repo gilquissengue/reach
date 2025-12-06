@@ -1,10 +1,15 @@
 // Vercel serverless function handler for Express app
-// Simplified and guaranteed to work handler
+// FORCE HTML response - NO DOWNLOADS
 
 const handler = async (req, res) => {
-  // CRITICAL: Set headers FIRST before anything else
+  // ABSOLUTE FIRST: Force HTML content type BEFORE anything else
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.removeHeader('Content-Disposition');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  
+  // Remove ANY download headers immediately
+  try {
+    res.removeHeader('Content-Disposition');
+  } catch (e) {}
   
   try {
     // Set environment variables
@@ -17,7 +22,8 @@ const handler = async (req, res) => {
       serverModule = require('../dist/index.cjs');
     } catch (error) {
       console.error('Failed to require server module:', error);
-      return res.status(500).send(`
+      // Send HTML error page
+      return res.status(500).end(`
         <!DOCTYPE html>
         <html>
           <head>
@@ -26,8 +32,7 @@ const handler = async (req, res) => {
           </head>
           <body>
             <h1>Build Error</h1>
-            <p>Server module not found. Please ensure the build completed successfully.</p>
-            <pre>${error.message}</pre>
+            <p>Server module not found.</p>
           </body>
         </html>
       `);
@@ -38,7 +43,7 @@ const handler = async (req, res) => {
     
     if (typeof appHandler !== 'function') {
       console.error('Server module does not export a function');
-      return res.status(500).send(`
+      return res.status(500).end(`
         <!DOCTYPE html>
         <html>
           <head>
@@ -47,60 +52,45 @@ const handler = async (req, res) => {
           </head>
           <body>
             <h1>Server Error</h1>
-            <p>Server module is not a function. Type: ${typeof appHandler}</p>
           </body>
         </html>
       `);
     }
     
-    // CRITICAL: Override ALL response methods to ensure Content-Type
-    const originalWrite = res.write;
+    // Override response methods to GUARANTEE HTML headers
     const originalWriteHead = res.writeHead;
     const originalEnd = res.end;
+    const originalSend = res.send;
     
-    // Ensure Content-Type is ALWAYS set before any write
-    const ensureHTML = () => {
-      if (!res.headersSent) {
-        const ct = res.getHeader('Content-Type');
-        if (!ct || (typeof ct === 'string' && !ct.includes('text/html'))) {
-          res.setHeader('Content-Type', 'text/html; charset=utf-8');
-        }
-        res.removeHeader('Content-Disposition');
-      }
-    };
-    
+    // Override writeHead
     res.writeHead = function(statusCode, statusMessage, headers) {
-      ensureHTML();
-      
-      // Fix headers object
-      if (headers) {
-        if (headers['Content-Type'] && !headers['Content-Type'].includes('charset')) {
-          if (headers['Content-Type'].includes('text/html')) {
-            headers['Content-Type'] = 'text/html; charset=utf-8';
-          }
-        }
-        delete headers['Content-Disposition'];
-      } else if (typeof statusMessage === 'object') {
+      // Force HTML headers
+      if (!headers) headers = {};
+      if (typeof statusMessage === 'object') {
         headers = statusMessage;
-        if (headers['Content-Type'] && !headers['Content-Type'].includes('charset')) {
-          if (headers['Content-Type'].includes('text/html')) {
-            headers['Content-Type'] = 'text/html; charset=utf-8';
-          }
-        }
-        delete headers['Content-Disposition'];
         statusMessage = undefined;
       }
+      
+      headers['Content-Type'] = 'text/html; charset=utf-8';
+      headers['X-Content-Type-Options'] = 'nosniff';
+      delete headers['Content-Disposition'];
       
       return originalWriteHead.call(this, statusCode, statusMessage, headers);
     };
     
-    res.write = function(chunk, encoding) {
-      ensureHTML();
-      return originalWrite.call(this, chunk, encoding);
+    // Override send
+    res.send = function(body) {
+      this.setHeader('Content-Type', 'text/html; charset=utf-8');
+      this.removeHeader('Content-Disposition');
+      return originalSend.call(this, body);
     };
     
+    // Override end
     res.end = function(chunk, encoding) {
-      ensureHTML();
+      if (!this.headersSent) {
+        this.setHeader('Content-Type', 'text/html; charset=utf-8');
+        this.removeHeader('Content-Disposition');
+      }
       return originalEnd.call(this, chunk, encoding);
     };
     
@@ -112,7 +102,7 @@ const handler = async (req, res) => {
     console.error(error.stack);
     
     if (!res.headersSent) {
-      return res.status(500).send(`
+      return res.status(500).end(`
         <!DOCTYPE html>
         <html>
           <head>
@@ -121,8 +111,7 @@ const handler = async (req, res) => {
           </head>
           <body>
             <h1>Internal Server Error</h1>
-            <p>An unexpected error occurred.</p>
-            <pre>${error.message}</pre>
+            <p>${error.message}</p>
           </body>
         </html>
       `);
