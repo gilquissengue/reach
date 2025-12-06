@@ -1,0 +1,613 @@
+{
+  "layout": {
+    "type": "landing_page",
+    "sections": [
+      {
+        "section": "header",
+        "background_color": "#000000",
+        "elements": [
+          {
+            "type": "logo",
+            "content": "M.",
+            "color": "#FFFFFF",
+            "position": "top-left"
+          },
+          {
+            "type": "navigation",
+            "position": "top-right",
+            "items": [
+              {
+                "text": "A Mutum",
+                "link": true
+              },
+              {
+                "text": "Serviços de Marketing B2B",
+                "link": true
+              },
+              {
+                "text": "Cases",
+                "link": true,
+                "highlight": true,
+                "color": "#FF0000"
+              },
+              {
+                "text": "Materiais",
+                "link": true,
+                "dropdown": true
+              },
+              {
+                "text": "Fale Conosco",
+                "link": true,
+                "style": "outlined",
+                "border_color": "#FF0000"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "section": "hero",
+        "background_color": "#000000",
+        "layout": "two-column",
+        "left_column": {
+          "elements": [
+            {
+              "type": "heading",
+              "text": "Agência de marketing B2B",
+              "color": "#FFFFFF",
+              "font_size": "large",
+              "font_weight": "bold"
+            },
+            {
+              "type": "subheading",
+              "text": "Uma nova experiência de marketing consultivo, inbound e digital na geração de demanda B2B. Bem-vindo à Mutum.",
+              "color": "#FFFFFF",
+              "font_size": "medium",
+              "font_weight": "normal"
+            },
+            {
+              "type": "button",
+              "text": "Ressignificar meu negócio",
+              "background_color": "#FFFFFF",
+              "text_color": "#000000",
+              "style": "solid"
+            }
+          ]
+        },
+        "right_column": {
+          "elements": [
+            {
+              "type": "decorative_graphic",
+              "description": "Abstract red concentric circles pattern on black background",
+              "color": "#FF0000"
+            }
+          ]
+        }
+      },
+      {
+        "section": "clients_logos",
+        "background_color": "#E5E5E5",
+        "padding": "medium",
+        "elements": [
+          {
+            "type": "logo_grid",
+            "logos": [
+              {
+                "name": "Frente",
+                "color": "black"
+              },
+              {
+                "name": "Fortes",
+                "color": "black"
+              },
+              {
+                "name": "BPI",
+                "color": "black"
+              },
+              {
+                "name": "abc27 Brasil",
+                "color": "black"
+              },
+              {
+                "name": "ADdisma",
+                "color": "black"
+              },
+              {
+                "name": "MLIS",
+                "color": "black"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "section": "mission_statement",
+        "background_color": "#E5E5E5",
+        "padding": "large",
+        "elements": [
+          {
+            "type": "logo",
+            "content": "MUTUM.",
+            "color": "#000000",
+            "font_weight": "bold"
+          },
+          {
+            "type": "heading",
+            "text": "Consultoria concepcão original brasileira",
+            "color": "#000000",
+            "font_size": "large",
+            "font_weight": "bold",
+            "highlight": {
+              "words": ["concepcão", "original", "brasileira"],
+              "style": "underline",
+              "color": "#FF0000"
+            }
+          },
+          {
+            "type": "paragraph",
+            "text": "Somos uma agência de marketing B2B consultiva que entende a complexidade e as boas práticas do marketing B2B de nicho e suas dinâmicas.",
+            "color": "#000000",
+            "font_size": "small"
+          },
+          {
+            "type": "paragraph",
+            "text": "Por anos de uma metodologia exclusiva para a execução B2B fornecemos, desenvolvemos estratégias totalmente personalizadas com uso serviços por projetos com foco em geração de resultados e valor.",
+            "color": "#000000",
+            "font_size": "small"
+          }
+        ]
+      },
+      {
+        "section": "services",
+        "background_color": "#E5E5E5",
+        "padding": "large",
+        "elements": [
+          {
+            "type": "heading",
+            "text": "Serviços",
+            "color": "#000000",
+            "font_size": "extra_large",
+            "font_weight": "black"
+          },
+          {
+            "type": "subheading",
+            "text": "Como a Mutum, uma agência de marketing, se uniu à consultoria? Veja como podemos ajudar seu negócio!",
+            "color": "#000000",
+            "font_size": "small",
+            "position": "top-right"
+          },
+          {
+            "type": "service_cards",
+            "layout": "grid",
+            "columns": 6,
+            "cards": [
+              {
+                "title": "Inbound marketing",
+                "background_color": "#FFFFFF",
+                "title_color": "#0000FF",
+                "border_top": "#0000FF",
+                "description": "Use as empresas crescem de uma vez por meio do conteúdo relevante por gerar leads e criar relacionamentos que fecham negócios a longo prazo e com qualidade para o sucesso.",
+                "font_size": "small"
+              },
+              {
+                "title": "Branding",
+                "background_color": "#FFFFFF",
+                "title_color": "#000000",
+                "border_top": "#FFFF00",
+                "description": "Construa uma marca que ecoa em sua indústria e com seus clientes. Nossa consultoria de branding está focada na construção de uma marca B2B relevante",
+                "font_size": "small"
+              },
+              {
+                "title": "Criação de conteúdo",
+                "background_color": "#FFFFFF",
+                "title_color": "#0000FF",
+                "border_top": "#0000FF",
+                "description": "Transforme a jornada do comprador na jornada com seu conteúdo de alta qualidade. Nossos escritores especializados criam conteúdos técnicos que convertem em suas fases do funil.",
+                "font_size": "small"
+              },
+              {
+                "title": "Design",
+                "background_color": "#FFFFFF",
+                "title_color": "#000000",
+                "border_top": "#FFFF00",
+                "description": "Trabalhe sua marca em cada toque do cliente com uma identidade visual que convence, relaciona com sua indústria e reflete a missão e valores.",
+                "font_size": "small"
+              },
+              {
+                "title": "ABM marketing",
+                "background_color": "#FFFFFF",
+                "title_color": "#0000FF",
+                "border_top": "#0000FF",
+                "description": "Abordagem estratégica de geração de leads totalmente personalizados com foco específico nas contas que mais importam para seu negócio.",
+                "font_size": "small"
+              },
+              {
+                "title": "Consultoria de marketing digital",
+                "background_color": "#FFFFFF",
+                "title_color": "#000000",
+                "border_top": "#FFFF00",
+                "description": "Como acelerar ofertas e iniciar estrutura com foco em crescimento. Conte com consultores de forma estratégica para apoiar processos e fazer seu negócio prosperar.",
+                "font_size": "small"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "section": "services_cta",
+        "background_color": "#E5E5E5",
+        "padding": "medium",
+        "elements": [
+          {
+            "type": "heading",
+            "text": "Serviços de marketing focados em empresas B2B",
+            "color": "#000000",
+            "font_size": "large",
+            "font_weight": "bold",
+            "highlight": {
+              "text": "focados em",
+              "color": "#FFA500"
+            }
+          },
+          {
+            "type": "paragraph",
+            "text": "A agência de marketing B2B que te entrega resultados reais!",
+            "color": "#000000",
+            "font_size": "small"
+          },
+          {
+            "type": "button",
+            "text": "Falar com a gente",
+            "background_color": "#FF0000",
+            "text_color": "#FFFFFF",
+            "border_radius": "rounded"
+          }
+        ]
+      },
+      {
+        "section": "case_studies",
+        "background_color": "#FFFFFF",
+        "padding": "large",
+        "layout": "three-column",
+        "cards": [
+          {
+            "logo": "ACCOUNTFY",
+            "logo_background": "#E8F5E9",
+            "category": "Inbound Marketing",
+            "title": "Gest Tecnologia",
+            "description": "As estratégias de SEO e criação de conteúdo para posicionamento orgânico trouxe em 12 meses +38% de tráfego.",
+            "button": {
+              "text": "Ver case completo",
+              "background_color": "#0000FF",
+              "text_color": "#FFFFFF"
+            }
+          },
+          {
+            "image_description": "Professional wearing glasses",
+            "category": "Geração de Leads",
+            "title": "NUVOX",
+            "description": "De 200k de faturamento liberando 4 colaboradores ao 1M em liberando o estratégico do comercial e do marketing",
+            "button": {
+              "text": "Ver case completo",
+              "background_color": "#0000FF",
+              "text_color": "#FFFFFF"
+            }
+          }
+        ]
+      },
+      {
+        "section": "blog",
+        "background_color": "#FFFFFF",
+        "padding": "large",
+        "elements": [
+          {
+            "type": "heading",
+            "text": "Blog",
+            "color": "#0000FF",
+            "font_size": "extra_large",
+            "font_weight": "black"
+          },
+          {
+            "type": "badge",
+            "text": "Novos por aqui?",
+            "background_color": "#FF6600",
+            "text_color": "#FFFFFF",
+            "position": "top-right-of-heading"
+          },
+          {
+            "type": "blog_cards",
+            "layout": "grid",
+            "columns": 3,
+            "cards": [
+              {
+                "image": "laptop_with_analytics",
+                "category": "Inbound Marketing",
+                "title": "Inbound Marketing B2B: o que é, características, estratégias e como aplicar ao seu negócio",
+                "description": "Conheça como a demanda do Inbound Marketing B2B funciona e de forma se conecta ao processo de vendas e dos clientes direto e sempre.",
+                "text_color": "#000000"
+              },
+              {
+                "image": "b2b_text_graphic",
+                "category": "Marketing",
+                "title": "Melhores práticas e estratégias de marketing B2B para aplicar no seu negócio",
+                "description": "Veja o que fazer para transformar as táticas de marketing em uma real geração de demanda desde a atra... (text cut off)",
+                "text_color": "#000000"
+              },
+              {
+                "image": "hand_with_phone",
+                "category": "Marketing Digital",
+                "title": "Estratégias de marketing b2b digital de sucesso de tecnologia aumentaram o fechamento de contratos",
+                "description": "Acompanhe quais foram as empresas do setor de tecnologia que usaram as melhores estratégias do fechamento reais dos...",
+                "text_color": "#000000"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "section": "faq",
+        "background_color": "#E5E5E5",
+        "padding": "large",
+        "layout": "two-column",
+        "left_column": {
+          "elements": [
+            {
+              "type": "heading",
+              "text": "FAQs",
+              "color": "#000000",
+              "font_size": "extra_large",
+              "font_weight": "black"
+            },
+            {
+              "type": "paragraph",
+              "text": "Respondemos algumas perguntas que recebemos sobre os serviços. Mas, lembre-se você pode entrar em contato para tirar dúvidas sobre os projetos. De qual jeito de dúvida ser ok.",
+              "color": "#000000",
+              "font_size": "small"
+            },
+            {
+              "type": "link_button",
+              "text": "Saiba mais",
+              "background_color": "#FF0000",
+              "text_color": "#FFFFFF",
+              "border_radius": "rounded"
+            }
+          ]
+        },
+        "right_column": {
+          "elements": [
+            {
+              "type": "accordion",
+              "items": [
+                {
+                  "question": "Posso adicionar mais itens no Ressignificar?",
+                  "background_color": "#FF6633",
+                  "text_color": "#FFFFFF",
+                  "status": "collapsed"
+                },
+                {
+                  "question": "Quais os diferenciais da minha agência versus agências?",
+                  "answer": "Temos mais de 10 anos de experiência em marketing B2B. Nossa equipe é especializada para atender o mercado B2B especificamente e a expertise na aplicação B2B. Nosso foco é criar marketing e + mostrar demanda qualificada a partir do que os negócios.",
+                  "background_color": "#FF6633",
+                  "text_color": "#000000",
+                  "status": "expanded"
+                },
+                {
+                  "question": "A agência atende que segmento?",
+                  "answer": "Atendemos empresas B2B que tenham processos comerciais bem definidos, com ciclos de vendas maiores e que são agressivas no suporte digital e consultorias nos setores (Saúde, Varejo) onde tem facilidade e fora infração dos pregado do varejo.",
+                  "background_color": "#FF6633",
+                  "text_color": "#000000",
+                  "status": "expanded"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "section": "newsletter_signup",
+        "background_color": "#0000CC",
+        "padding": "large",
+        "elements": [
+          {
+            "type": "heading",
+            "text": "Assinar nossa newsletter mensal!",
+            "color": "#FFFFFF",
+            "font_size": "large",
+            "font_weight": "bold"
+          },
+          {
+            "type": "paragraph",
+            "text": "Aqui nós vamos dar notícias no marketing, boas metodologias que funcionam sobre vendas e outras coisas legais para atender na caixa de email, na primeira ou a favor da semana! Leva menos de 5s para de inscrever, Junte-se a nós!",
+            "color": "#FFFFFF",
+            "font_size": "small"
+          },
+          {
+            "type": "form",
+            "fields": [
+              {
+                "type": "text_input",
+                "placeholder": "Nome",
+                "background_color": "#FFFFFF",
+                "width": "half"
+              },
+              {
+                "type": "email_input",
+                "placeholder": "Nome do E-mail",
+                "background_color": "#FFFFFF",
+                "width": "half"
+              }
+            ],
+            "checkbox": {
+              "label": "Ao compartilhar meu dados concordo com a Política de Privacidade",
+              "text_color": "#FFFFFF",
+              "font_size": "x-small"
+            },
+            "submit_button": {
+              "text": "Inscrever-se",
+              "background_color": "#FFFFFF",
+              "text_color": "#0000CC"
+            }
+          }
+        ]
+      },
+      {
+        "section": "footer",
+        "background_color": "#000000",
+        "padding": "large",
+        "layout": "multi-column",
+        "columns": [
+          {
+            "elements": [
+              {
+                "type": "logo",
+                "content": "M.",
+                "color": "#FFFFFF",
+                "font_size": "large"
+              },
+              {
+                "type": "text",
+                "content": "Rua Ministro Orozimbo Nonato, 422 - Vila da Serra - Nova Lima - MG - Brazil",
+                "color": "#FFFFFF",
+                "font_size": "x-small"
+              },
+              {
+                "type": "certifications",
+                "badges": [
+                  {
+                    "name": "RD Station Partner",
+                    "type": "image"
+                  },
+                  {
+                    "name": "Google Partner",
+                    "type": "image"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "Suporte",
+            "color": "#FFFFFF",
+            "links": [
+              {
+                "text": "Serviço de Marketing B2B",
+                "color": "#FFFFFF"
+              },
+              {
+                "text": "Cases",
+                "color": "#FFFFFF"
+              },
+              {
+                "text": "Política de Privacidade",
+                "color": "#FFFFFF"
+              },
+              {
+                "text": "FAQ",
+                "color": "#FFFFFF"
+              }
+            ]
+          },
+          {
+            "heading": "Suporte",
+            "color": "#FFFFFF",
+            "links": [
+              {
+                "text": "A Mutum",
+                "color": "#FFFFFF"
+              },
+              {
+                "text": "Blog",
+                "color": "#FFFFFF"
+              },
+              {
+                "text": "Materiais",
+                "color": "#FFFFFF"
+              }
+            ]
+          },
+          {
+            "elements": [
+              {
+                "type": "social_media",
+                "icons": [
+                  {
+                    "platform": "LinkedIn",
+                    "color": "#00A0DC",
+                    "shape": "circle"
+                  },
+                  {
+                    "platform": "Instagram",
+                    "color": "#E4405F",
+                    "shape": "circle"
+                  },
+                  {
+                    "platform": "Facebook",
+                    "color": "#1877F2",
+                    "shape": "circle"
+                  },
+                  {
+                    "platform": "YouTube",
+                    "color": "#FF0000",
+                    "shape": "circle"
+                  }
+                ]
+              },
+              {
+                "type": "contact_info",
+                "items": [
+                  {
+                    "label": "E-mail",
+                    "value": "contato@agenciamutum.com.br",
+                    "color": "#FFFFFF"
+                  },
+                  {
+                    "label": "Telefone",
+                    "value": "(31) 3241-9631",
+                    "color": "#FFFFFF"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "section": "floating_widgets",
+        "elements": [
+          {
+            "type": "whatsapp_button",
+            "background_color": "#25D366",
+            "icon_color": "#FFFFFF",
+            "position": "bottom-right"
+          },
+          {
+            "type": "chat_button",
+            "background_color": "#0000FF",
+            "icon_color": "#FFFFFF",
+            "position": "bottom-right-secondary"
+          }
+        ]
+      },
+      {
+        "section": "cookie_banner",
+        "background_color": "#FFFFFF",
+        "position": "bottom",
+        "elements": [
+          {
+            "type": "text",
+            "content": "Nós usamos cookies para melhorar a sua experiência de navegação no site. Ao continuar navegando, você concorda com a nossa Política de Privacidade.",
+            "font_size": "x-small",
+            "color": "#000000"
+          },
+          {
+            "type": "button",
+            "text": "Aceitar",
+            "background_color": "#000000",
+            "text_color": "#FFFFFF",
+            "size": "small"
+          }
+        ]
+      }
+    ]
+  }
+}
