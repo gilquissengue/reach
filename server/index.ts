@@ -94,35 +94,27 @@ const setupApp = async () => {
   return appSetupPromise;
 };
 
-// For Vercel: export a function that ensures app is setup
-// Check for Vercel environment (either VERCEL env var or when running as serverless)
-if (process.env.VERCEL || (typeof process.env.VERCEL_ENV !== 'undefined')) {
-  // Export a function that waits for setup
-  const vercelHandler = async (req: any, res: any) => {
-    try {
-      await setupApp();
-      return app(req, res);
-    } catch (err) {
-      console.error('Error in Vercel handler:', err);
-      if (!res.headersSent) {
-        res.status(500).setHeader('Content-Type', 'text/html; charset=utf-8').send(`
-          <!DOCTYPE html>
-          <html>
-            <head><meta charset="utf-8"><title>Server Error</title></head>
-            <body><h1>Server Error</h1><p>Failed to initialize server.</p></body>
-          </html>
-        `);
-      }
+// Handler function for Vercel serverless
+const vercelHandler = async (req: any, res: any) => {
+  try {
+    await setupApp();
+    return app(req, res);
+  } catch (err) {
+    console.error('Error in Vercel handler:', err);
+    if (!res.headersSent) {
+      res.status(500).setHeader('Content-Type', 'text/html; charset=utf-8').send(`
+        <!DOCTYPE html>
+        <html>
+          <head><meta charset="utf-8"><title>Server Error</title></head>
+          <body><h1>Server Error</h1><p>Failed to initialize server.</p></body>
+        </html>
+      `);
     }
-  };
-  
-  // @ts-ignore - CommonJS export for Vercel
-  if (typeof module !== 'undefined' && module.exports) {
-    // @ts-ignore
-    module.exports = vercelHandler;
   }
-} else {
-  // Normal server startup
+};
+
+// Normal server startup (only if not on Vercel)
+if (!process.env.VERCEL && typeof process.env.VERCEL_ENV === 'undefined') {
   setupApp().then(() => {
     const port = parseInt(process.env.PORT || "5000", 10);
     httpServer.listen(
@@ -140,3 +132,5 @@ if (process.env.VERCEL || (typeof process.env.VERCEL_ENV !== 'undefined')) {
 
 // Export app for ES modules
 export { app };
+// Export handler as default - esbuild will convert this to module.exports in CommonJS format
+export default vercelHandler;
