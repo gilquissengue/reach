@@ -1,6 +1,6 @@
 import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
-import { rm, readFile, mkdir, cp } from "fs/promises";
+import { rm, readFile, mkdir, writeFile } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 
@@ -76,7 +76,7 @@ async function buildAll() {
       // Create a .gitkeep file to ensure the directory exists
       const gitkeepPath = path.join("build", ".gitkeep");
       if (!existsSync(gitkeepPath)) {
-        await require("fs/promises").writeFile(gitkeepPath, "");
+        await writeFile(gitkeepPath, "");
       }
       console.log("✓ Created build directory for Vercel");
     } catch (err) {
