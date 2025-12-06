@@ -10,9 +10,33 @@ const handler = async (req, res) => {
   const originalSend = res.send ? res.send.bind(res) : null;
   const originalSendFile = res.sendFile ? res.sendFile.bind(res) : null;
   
-  // Track if this is an HTML page request
-  const isHtmlRequest = !req.path || req.path === '/' || req.path === '/index.html' || 
-    (!req.path.includes('.') && !req.path.startsWith('/api') && !req.path.startsWith('/assets'));
+  // Helper to get request path reliably (works with Express req and Vercel req)
+  const getRequestPath = () => {
+    if (req.path) return req.path;
+    if (req.url) {
+      try {
+        // Try to parse as full URL first
+        if (req.url.startsWith('http://') || req.url.startsWith('https://')) {
+          const url = new URL(req.url);
+          return url.pathname;
+        }
+        // Otherwise, try to construct URL
+        const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+        return url.pathname;
+      } catch {
+        // Fallback: extract pathname from req.url manually
+        const pathname = req.url.split('?')[0].split('#')[0];
+        return pathname || '/';
+      }
+    }
+    return '/';
+  };
+  
+  const requestPath = getRequestPath();
+  
+  // Track if this is an HTML page request (not API, not static assets)
+  const isHtmlRequest = requestPath === '/' || requestPath === '/index.html' || 
+    (!requestPath.includes('.') && !requestPath.startsWith('/api') && !requestPath.startsWith('/assets'));
   
   // Intercept setHeader to block Content-Disposition and force HTML for root paths
   res.setHeader = function(name, value) {

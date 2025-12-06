@@ -45,8 +45,27 @@ export function serveStatic(app: Express) {
 
   // CRITICAL: Middleware to BLOCK Content-Disposition and force HTML for root paths
   app.use((req, res, next) => {
-    const isHtmlRequest = !req.path || req.path === '/' || req.path === '/index.html' || 
-      (!req.path.includes('.') && !req.path.startsWith('/api') && !req.path.startsWith('/assets'));
+    // Helper to get request path reliably
+    const getRequestPath = () => {
+      if (req.path) return req.path;
+      if (req.url) {
+        try {
+          const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+          return url.pathname;
+        } catch {
+          // Fallback: extract pathname from req.url manually
+          const pathname = req.url.split('?')[0];
+          return pathname;
+        }
+      }
+      return '/';
+    };
+    
+    const requestPath = getRequestPath();
+    
+    // Track if this is an HTML page request (not API, not static assets)
+    const isHtmlRequest = requestPath === '/' || requestPath === '/index.html' || 
+      (!requestPath.includes('.') && !requestPath.startsWith('/api') && !requestPath.startsWith('/assets'));
     
     // Store original methods
     const originalSetHeader = res.setHeader.bind(res);
