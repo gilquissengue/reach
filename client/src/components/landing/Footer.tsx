@@ -8,25 +8,25 @@ export default function Footer() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-blue-600 to-transparent opacity-50" />
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px]" />
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 mb-24">
-          <div className="space-y-8">
-            <h2 className="text-5xl md:text-7xl font-display font-bold tracking-tighter leading-[0.9]">
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 md:gap-16 mb-16 md:mb-24">
+          <div className="space-y-6 md:space-y-8">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold tracking-tighter leading-[0.9]">
               Let's build <br />
               <span className="text-gray-500">something</span> <span className="text-blue-500">legendary.</span>
             </h2>
-            <p className="text-xl text-gray-400 max-w-lg font-light leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-400 max-w-lg font-light leading-relaxed">
               Não deixe para amanhã o crescimento que você pode começar hoje. 
               Sua concorrência não está esperando. Vamos dominar o mercado juntos?
             </p>
-            <div className="flex gap-4 pt-4">
-              <a href="mailto:geral@reach.ao" className="inline-flex items-center gap-2 text-white border-b border-blue-500 pb-1 hover:text-blue-400 transition-colors text-lg group">
+            <div className="flex gap-4 pt-2 md:pt-4">
+              <a href="mailto:geral@reach.ao" className="inline-flex items-center gap-2 text-white border-b border-blue-500 pb-1 hover:text-blue-400 active:text-blue-300 transition-colors text-base md:text-lg group touch-manipulation">
                 Iniciar Conversa <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </a>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12 lg:pl-12">
+          <div className="grid sm:grid-cols-2 gap-8 md:gap-12 lg:pl-12">
             <div className="space-y-6">
               <h4 className="font-mono text-xs uppercase tracking-[0.2em] text-gray-500">Contato Direto</h4>
               <ul className="space-y-4">
@@ -73,26 +73,26 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-600 font-mono">
+        <div className="border-t border-white/5 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs text-gray-600 font-mono">
           <div className="flex flex-col gap-2">
-            <div>
+            <div className="text-center md:text-left">
               © {new Date().getFullYear()} REACH Performance Marketing. Todos os sistemas operacionais.
             </div>
-            <div className="text-gray-500">
+            <div className="text-gray-500 text-center md:text-left">
               Desenvolvido pela{" "}
               <a 
                 href="https://wa.me/244923101084?text=Olá!%20Vim%20do%20site%20REACH%20Performance%20Marketing%20e%20gostaria%20de%20saber%20mais%20sobre%20os%20serviços%20de%20desenvolvimento." 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="hover:text-blue-400 transition-colors underline decoration-blue-400/50 hover:decoration-blue-400"
+                className="hover:text-blue-400 active:text-blue-300 transition-colors underline decoration-blue-400/50 hover:decoration-blue-400 touch-manipulation"
               >
                 nuvex
               </a>
             </div>
           </div>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">Política de Privacidade</a>
-            <a href="#" className="hover:text-white transition-colors">Termos de Serviço</a>
+          <div className="flex flex-col sm:flex-row gap-4 md:gap-6 w-full md:w-auto justify-center md:justify-end">
+            <a href="#" className="hover:text-white active:text-gray-300 transition-colors text-center touch-manipulation">Política de Privacidade</a>
+            <a href="#" className="hover:text-white active:text-gray-300 transition-colors text-center touch-manipulation">Termos de Serviço</a>
           </div>
         </div>
       </div>

@@ -106,9 +106,28 @@ export default function MultiStepForm() {
   }
 
   return (
-    <section className="py-32 bg-[#020617] relative border-t border-white/5">
-      <div className="container mx-auto px-6 max-w-5xl">
-        <div className="grid md:grid-cols-12 gap-12">
+    <section className="py-16 md:py-32 bg-[#020617] relative border-t border-white/5">
+      <div className="container mx-auto px-4 md:px-6 max-w-5xl">
+        <div className="grid md:grid-cols-12 gap-8 md:gap-12">
+          {/* Mobile Progress Indicator */}
+          <div className="md:hidden w-full">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-sm text-gray-400 font-mono uppercase">Passo {step + 1} de {STEPS.length}</span>
+              <span className="text-sm text-blue-400 font-mono">{Math.round(((step + 1) / STEPS.length) * 100)}%</span>
+            </div>
+            <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-blue-600 transition-all duration-300 rounded-full"
+                style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
+              />
+            </div>
+            <div className="mt-4">
+              <h3 className="text-lg font-mono uppercase text-blue-400 tracking-wider">
+                {STEPS[step].title}
+              </h3>
+            </div>
+          </div>
+
           {/* Sidebar Navigation */}
           <div className="md:col-span-4 space-y-8 hidden md:block">
             <div>
@@ -145,7 +164,7 @@ export default function MultiStepForm() {
 
           {/* Form Area */}
           <div className="md:col-span-8">
-            <div className="glass rounded-2xl p-8 md:p-12 border border-white/10 min-h-[500px] flex flex-col relative overflow-hidden shadow-2xl">
+            <div className="glass rounded-2xl p-6 md:p-8 lg:p-12 border border-white/10 min-h-[400px] md:min-h-[500px] flex flex-col relative overflow-hidden shadow-2xl">
               {/* Decorative scanline */}
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-20 animate-[scan_2s_linear_infinite]" />
 
@@ -162,21 +181,21 @@ export default function MultiStepForm() {
                     {/* Render Steps */}
                     {step === 0 && (
                       <div className="space-y-6">
-                        <h3 className="text-3xl font-bold text-white font-display">Dados de Contacto</h3>
+                        <h3 className="text-2xl md:text-3xl font-bold text-white font-display">Dados de Contacto</h3>
                         <div className="grid gap-6">
                           <div className="group">
                             <Label className="text-gray-400 mb-2 block group-focus-within:text-blue-400 transition-colors">Nome Completo</Label>
-                            <Input {...register("name")} className="bg-white/5 border-white/10 text-white focus:border-blue-500 h-14 text-lg px-4 transition-all focus:bg-blue-500/5 focus:shadow-[0_0_20px_rgba(37,99,235,0.1)]" placeholder="Digite seu nome" />
+                            <Input {...register("name")} className="bg-white/5 border-white/10 text-white focus:border-blue-500 h-14 md:h-14 text-base md:text-lg px-4 transition-all focus:bg-blue-500/5 focus:shadow-[0_0_20px_rgba(37,99,235,0.1)] touch-manipulation" placeholder="Digite seu nome" />
                             {errors.name && <span className="text-red-500 text-sm mt-1 block">{errors.name.message}</span>}
                           </div>
                           <div className="group">
                             <Label className="text-gray-400 mb-2 block group-focus-within:text-blue-400 transition-colors">Email Corporativo</Label>
-                            <Input {...register("email")} className="bg-white/5 border-white/10 text-white focus:border-blue-500 h-14 text-lg px-4 transition-all focus:bg-blue-500/5 focus:shadow-[0_0_20px_rgba(37,99,235,0.1)]" placeholder="seu@empresa.com" />
+                            <Input {...register("email")} className="bg-white/5 border-white/10 text-white focus:border-blue-500 h-14 text-base md:text-lg px-4 transition-all focus:bg-blue-500/5 focus:shadow-[0_0_20px_rgba(37,99,235,0.1)] touch-manipulation" placeholder="seu@empresa.com" />
                             {errors.email && <span className="text-red-500 text-sm mt-1 block">{errors.email.message}</span>}
                           </div>
                           <div className="group">
                             <Label className="text-gray-400 mb-2 block group-focus-within:text-blue-400 transition-colors">Telefone (+244)</Label>
-                            <Input {...register("phone")} className="bg-white/5 border-white/10 text-white focus:border-blue-500 h-14 text-lg px-4 transition-all focus:bg-blue-500/5 focus:shadow-[0_0_20px_rgba(37,99,235,0.1)]" placeholder="9XX XXX XXX" />
+                            <Input {...register("phone")} className="bg-white/5 border-white/10 text-white focus:border-blue-500 h-14 text-base md:text-lg px-4 transition-all focus:bg-blue-500/5 focus:shadow-[0_0_20px_rgba(37,99,235,0.1)] touch-manipulation" placeholder="9XX XXX XXX" />
                             {errors.phone && <span className="text-red-500 text-sm mt-1 block">{errors.phone.message}</span>}
                           </div>
                         </div>
@@ -185,7 +204,7 @@ export default function MultiStepForm() {
 
                     {step === 1 && (
                       <div className="space-y-6">
-                        <h3 className="text-3xl font-bold text-white font-display">Objectivo Principal</h3>
+                        <h3 className="text-2xl md:text-3xl font-bold text-white font-display">Objectivo Principal</h3>
                         <RadioGroup onValueChange={(val) => setValue("objective", val)} className="grid gap-3">
                           {["Gerar leads qualificadas", "Aumentar volume de vendas", "Brand Awareness", "Auditoria de Contas", "Recuperação de Acessos"].map((opt) => (
                             <OptionItem key={opt} value={opt} label={opt} />
@@ -196,7 +215,7 @@ export default function MultiStepForm() {
                     
                      {step === 2 && (
                       <div className="space-y-6">
-                        <h3 className="text-3xl font-bold text-white font-display">Histórico de Investimento</h3>
+                        <h3 className="text-2xl md:text-3xl font-bold text-white font-display">Histórico de Investimento</h3>
                         <RadioGroup onValueChange={(val) => setValue("invests_in_ads", val)} className="grid gap-3">
                           {["Sim, investimento recorrente", "Sim, esporadicamente", "Não, nunca investimos"].map((opt) => (
                             <OptionItem key={opt} value={opt} label={opt} />
@@ -207,7 +226,7 @@ export default function MultiStepForm() {
 
                     {step === 3 && (
                       <div className="space-y-6">
-                        <h3 className="text-3xl font-bold text-white font-display">Budget Mensal (AKZ)</h3>
+                        <h3 className="text-2xl md:text-3xl font-bold text-white font-display">Budget Mensal (AKZ)</h3>
                         <RadioGroup onValueChange={(val) => setValue("budget", val)} className="grid gap-3">
                           {["< 150.000", "150.000 - 350.000", "350.000 - 800.000", "> 800.000", "A definir"].map((opt) => (
                             <OptionItem key={opt} value={opt} label={opt} />
@@ -218,13 +237,13 @@ export default function MultiStepForm() {
 
                      {step === 4 && (
                       <div className="space-y-6">
-                        <h3 className="text-3xl font-bold text-white font-display">Canais de Interesse</h3>
+                        <h3 className="text-2xl md:text-3xl font-bold text-white font-display">Canais de Interesse</h3>
                         <div className="grid gap-3">
                           {["Meta (FB/IG)", "Google Ads", "LinkedIn", "Não tenho certeza"].map((opt) => (
-                            <div key={opt} className="flex items-center space-x-3 p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors group cursor-pointer">
+                            <div key={opt} className="flex items-center space-x-3 p-4 md:p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:bg-white/15 transition-colors group cursor-pointer touch-manipulation min-h-[56px]">
                               <Checkbox 
                                 id={opt} 
-                                className="border-white/20 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500 w-5 h-5 rounded-md transition-all"
+                                className="border-white/20 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500 w-6 h-6 md:w-5 md:h-5 rounded-md transition-all flex-shrink-0"
                                 onCheckedChange={(checked) => {
                                   if (checked) {
                                     setValue("platforms", [...platforms, opt]);
@@ -234,7 +253,7 @@ export default function MultiStepForm() {
                                 }}
                                 checked={platforms.includes(opt)}
                               />
-                              <label htmlFor={opt} className="text-lg font-medium text-white cursor-pointer w-full group-hover:text-blue-200 transition-colors">
+                              <label htmlFor={opt} className="text-base md:text-lg font-medium text-white cursor-pointer w-full group-hover:text-blue-200 transition-colors">
                                 {opt}
                               </label>
                             </div>
@@ -245,7 +264,7 @@ export default function MultiStepForm() {
                     
                     {step >= 5 && step < 9 && (
                        <div className="space-y-6">
-                         <h3 className="text-3xl font-bold text-white font-display">Detalhes Adicionais</h3>
+                         <h3 className="text-2xl md:text-3xl font-bold text-white font-display">Detalhes Adicionais</h3>
                          {step === 5 && (
                            <RadioGroup onValueChange={(val) => setValue("ad_accounts_status", val)} className="grid gap-3">
                               <h4 className="text-gray-400 mb-2 font-mono text-sm uppercase">Status das Contas de Anúncios</h4>
@@ -266,7 +285,7 @@ export default function MultiStepForm() {
                              <div className="space-y-6">
                                 <div>
                                   <Label className="text-gray-400 mb-2 block font-mono text-sm uppercase">Setor de Atuação</Label>
-                                  <Input {...register("sector")} className="bg-white/5 border-white/10 text-white focus:border-blue-500 h-14 text-lg" placeholder="Ex: Tecnologia, Varejo..." />
+                                  <Input {...register("sector")} className="bg-white/5 border-white/10 text-white focus:border-blue-500 h-14 text-base md:text-lg px-4 touch-manipulation" placeholder="Ex: Tecnologia, Varejo..." />
                                 </div>
                                 
                                 <div>
@@ -292,8 +311,8 @@ export default function MultiStepForm() {
 
                     {step === 9 && (
                        <div className="space-y-6">
-                        <h3 className="text-3xl font-bold text-white font-display">Confirmação Final</h3>
-                        <p className="text-gray-400 text-lg">Gostaria de agendar uma reunião de alinhamento com um especialista?</p>
+                        <h3 className="text-2xl md:text-3xl font-bold text-white font-display">Confirmação Final</h3>
+                        <p className="text-gray-400 text-base md:text-lg">Gostaria de agendar uma reunião de alinhamento com um especialista?</p>
                          <RadioGroup onValueChange={(val) => setValue("call_alignment", val)} className="grid gap-3">
                             {["Sim, quero agendar agora", "Não, prefiro contacto por email"].map((opt) => (
                               <OptionItem key={opt} value={opt} label={opt} />
@@ -306,37 +325,42 @@ export default function MultiStepForm() {
               </div>
 
               <div className="flex justify-between pt-8 border-t border-white/5 mt-auto items-center">
-                <Button 
-                  variant="ghost" 
-                  onClick={onBack} 
-                  disabled={step === 0 || isSubmitting}
-                  className="text-gray-400 hover:text-white hover:bg-white/5"
-                >
-                  <ChevronLeft className="w-4 h-4 mr-2" />
-                  Voltar
-                </Button>
-                
-                {step === STEPS.length - 1 ? (
-                  <Button 
-                    onClick={handleSubmit(onSubmit)} 
-                    disabled={isSubmitting}
-                    className="bg-blue-600 hover:bg-blue-500 text-white px-10 h-12 rounded-full shadow-[0_0_30px_rgba(37,99,235,0.4)] transition-all hover:scale-105 font-medium tracking-wide"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processando...
-                      </>
+                  <div className="flex flex-col sm:flex-row justify-between gap-4 pt-6 md:pt-8 border-t border-white/5 mt-auto items-center">
+                    <Button 
+                      variant="ghost" 
+                      onClick={onBack} 
+                      disabled={step === 0 || isSubmitting}
+                      className="text-gray-400 hover:text-white hover:bg-white/5 h-12 px-6 w-full sm:w-auto touch-manipulation"
+                    >
+                      <ChevronLeft className="w-4 h-4 mr-2" />
+                      Voltar
+                    </Button>
+                    
+                    {step === STEPS.length - 1 ? (
+                      <Button 
+                        onClick={handleSubmit(onSubmit)} 
+                        disabled={isSubmitting}
+                        className="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white px-8 md:px-10 h-12 md:h-12 rounded-full shadow-[0_0_30px_rgba(37,99,235,0.4)] transition-all hover:scale-105 active:scale-95 font-medium tracking-wide w-full sm:w-auto touch-manipulation"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processando...
+                          </>
+                        ) : (
+                          <>
+                            Enviar Solicitação <Send className="w-4 h-4 ml-2" />
+                          </>
+                        )}
+                      </Button>
                     ) : (
-                      <>
-                        Enviar Solicitação <Send className="w-4 h-4 ml-2" />
-                      </>
+                      <Button 
+                        onClick={onNext} 
+                        className="bg-white text-black hover:bg-gray-200 active:bg-gray-300 px-8 h-12 rounded-full font-medium transition-all hover:scale-105 active:scale-95 w-full sm:w-auto touch-manipulation"
+                      >
+                        Continuar <ChevronRight className="w-4 h-4 ml-2" />
+                      </Button>
                     )}
-                  </Button>
-                ) : (
-                  <Button onClick={onNext} className="bg-white text-black hover:bg-gray-200 px-8 h-12 rounded-full font-medium transition-all hover:scale-105">
-                    Continuar <ChevronRight className="w-4 h-4 ml-2" />
-                  </Button>
-                )}
+                  </div>
               </div>
             </div>
           </div>
@@ -352,10 +376,10 @@ function OptionItem({ value, label }: { value: string, label: string }) {
       <RadioGroupItem value={value} id={value} className="peer sr-only" />
       <Label
         htmlFor={value}
-        className="flex items-center justify-between p-5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-blue-500/50 peer-data-[state=checked]:border-blue-500 peer-data-[state=checked]:bg-blue-500/10 cursor-pointer transition-all group shadow-sm hover:shadow-md"
+        className="flex items-center justify-between p-4 md:p-5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:bg-white/15 hover:border-blue-500/50 peer-data-[state=checked]:border-blue-500 peer-data-[state=checked]:bg-blue-500/10 cursor-pointer transition-all group shadow-sm hover:shadow-md touch-manipulation min-h-[56px]"
       >
-        <span className="text-white text-lg group-hover:text-blue-200 transition-colors">{label}</span>
-        <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center peer-data-[state=checked]:border-blue-500 peer-data-[state=checked]:bg-blue-500 transition-all">
+        <span className="text-white text-base md:text-lg group-hover:text-blue-200 transition-colors pr-2">{label}</span>
+        <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center peer-data-[state=checked]:border-blue-500 peer-data-[state=checked]:bg-blue-500 transition-all flex-shrink-0">
           <Check className="w-3 h-3 text-white opacity-0 peer-data-[state=checked]:opacity-100" />
         </div>
       </Label>

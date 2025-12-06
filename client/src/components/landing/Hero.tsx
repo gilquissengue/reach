@@ -45,7 +45,7 @@ export default function Hero() {
   const currentTheme = themes[currentIndex];
 
   return (
-    <section className="relative h-screen min-h-[800px] flex items-end justify-start overflow-hidden bg-[#020617]">
+    <section className="relative h-screen min-h-[600px] md:min-h-[800px] flex items-end justify-start overflow-hidden bg-[#020617] pt-20 md:pt-0">
       <GraphicBackground />
       
       {/* Background with Parallax */}
@@ -63,12 +63,12 @@ export default function Hero() {
       </motion.div>
 
       {/* Content */}
-      <div className="container mx-auto px-6 relative z-10 pb-32">
+      <div className="container mx-auto px-4 md:px-6 relative z-10 pb-16 md:pb-32">
         <motion.div
           initial={{ opacity: 0, x: -50, filter: "blur(10px)" }}
           animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-4xl space-y-8"
+          className="max-w-4xl space-y-6 md:space-y-8"
         >
           <AnimatePresence mode="wait">
             <motion.div
@@ -78,21 +78,21 @@ export default function Hero() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             >
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold font-display tracking-tight text-white leading-[1.1]">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold font-display tracking-tight text-white leading-[1.1]">
                 {currentTheme.title} <br />
                 <span className="text-gray-200">{currentTheme.subtitle}</span>
               </h1>
               
-              <p className="text-xl md:text-2xl text-gray-400 font-light max-w-xl leading-relaxed font-sans mt-4">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-400 font-light max-w-xl leading-relaxed font-sans mt-3 md:mt-4">
                 {currentTheme.description}
               </p>
             </motion.div>
           </AnimatePresence>
           
-          <div className="flex pt-6">
+          <div className="flex pt-4 md:pt-6">
             <Button 
               size="lg" 
-              className="bg-blue-600 text-white hover:bg-blue-500 text-lg px-12 h-16 rounded-full font-medium transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] group"
+              className="bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700 text-base md:text-lg px-8 md:px-12 h-14 md:h-16 rounded-full font-medium transition-all hover:scale-105 active:scale-95 hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] group touch-manipulation w-full sm:w-auto"
             >
               Iniciar Análise <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
@@ -100,10 +100,10 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll Indicator - Hidden on mobile, shown on desktop */}
       <motion.div 
-        style={{ opacity, right: 'calc(3rem + 4%)' }}
-        className="absolute bottom-12 flex flex-col items-center gap-3 text-gray-500"
+        style={{ opacity }}
+        className="hidden md:flex absolute bottom-12 right-12 flex-col items-center gap-3 text-gray-500"
       >
         <span className="text-[10px] uppercase tracking-[0.3em] font-mono animate-pulse">Role para explorar</span>
         <motion.div 
