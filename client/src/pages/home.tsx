@@ -1,16 +1,11 @@
 import Header from "@/components/landing/Header";
 import Hero from "@/components/landing/Hero";
-import ClientLogos from "@/components/landing/ClientLogos";
-import Mission from "@/components/landing/Mission";
+import Process from "@/components/landing/Process";
+import Stats from "@/components/landing/Stats";
 import Services from "@/components/landing/Services";
-import ServicesCTA from "@/components/landing/ServicesCTA";
-import CaseStudies from "@/components/landing/CaseStudies";
-import Blog from "@/components/landing/Blog";
-import FAQ from "@/components/landing/FAQ";
-import Newsletter from "@/components/landing/Newsletter";
+import Benefits from "@/components/landing/Benefits";
+import MultiStepForm from "@/components/landing/MultiStepForm";
 import Footer from "@/components/landing/Footer";
-import CookieBanner from "@/components/landing/CookieBanner";
-import FloatingWidgets from "@/components/landing/FloatingWidgets";
 
 export default function Home() {
   return (
@@ -18,18 +13,13 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        <ClientLogos />
-        <Mission />
+        <Process />
+        <Stats />
         <Services />
-        <ServicesCTA />
-        <CaseStudies />
-        <Blog />
-        <FAQ />
-        <Newsletter />
+        <Benefits />
+        <MultiStepForm />
       </main>
       <Footer />
-      <CookieBanner />
-      <FloatingWidgets />
     </div>
   );
 }

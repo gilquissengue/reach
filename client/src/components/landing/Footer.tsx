@@ -1,68 +1,40 @@
-import { Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white pt-24 pb-12">
+    <footer className="bg-black text-white pt-16 pb-8 border-t border-white/10">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          <div className="space-y-6">
-            <div className="text-3xl font-display font-bold">M.</div>
-            <p className="text-xs text-gray-400 max-w-[200px]">
-              Rua Ministro Orozimbo Nonato, 422 - Vila da Serra - Nova Lima - MG - Brazil
+        <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-12">
+          <div className="max-w-sm">
+            <div className="text-3xl font-display font-bold mb-4 flex items-center gap-2">
+              REACH <span className="w-2 h-2 bg-brand-blue rounded-full"></span>
+            </div>
+            <p className="text-gray-400 mb-6">
+              Transformamos procura em clientes reais. Estratégias de performance para negócios que querem crescer.
             </p>
-            <div className="flex gap-4">
-               {/* Partner Badges Placeholder */}
-               <div className="h-12 w-24 bg-white/10 rounded flex items-center justify-center text-[10px] text-center leading-tight p-1">
-                 RD Station Partner
-               </div>
-               <div className="h-12 w-24 bg-white/10 rounded flex items-center justify-center text-[10px] text-center leading-tight p-1">
-                 Google Partner
-               </div>
-            </div>
+            <a href="mailto:geral@reach.ao" className="text-brand-blue hover:text-white transition-colors text-lg font-medium">
+              geral@reach.ao
+            </a>
           </div>
 
-          <div>
-            <h4 className="font-bold mb-6">Suporte</h4>
-            <ul className="space-y-4 text-sm text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">Serviço de Marketing B2B</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Cases</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Política de Privacidade</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold mb-6">Empresa</h4>
-            <ul className="space-y-4 text-sm text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">A Mutum</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Materiais</a></li>
-            </ul>
-          </div>
-
-          <div className="space-y-8">
-            <div className="flex gap-4">
-              <a href="#" className="bg-[#00A0DC] p-2 rounded-full hover:opacity-80 transition-opacity"><Linkedin className="w-5 h-5" /></a>
-              <a href="#" className="bg-[#E4405F] p-2 rounded-full hover:opacity-80 transition-opacity"><Instagram className="w-5 h-5" /></a>
-              <a href="#" className="bg-[#1877F2] p-2 rounded-full hover:opacity-80 transition-opacity"><Facebook className="w-5 h-5" /></a>
-              <a href="#" className="bg-[#FF0000] p-2 rounded-full hover:opacity-80 transition-opacity"><Youtube className="w-5 h-5" /></a>
-            </div>
-            
-            <div className="space-y-2 text-sm text-gray-400">
-              <p>
-                <span className="block text-xs text-gray-500">E-mail</span>
-                contato@agenciamutum.com.br
-              </p>
-              <p>
-                <span className="block text-xs text-gray-500">Telefone</span>
-                (31) 3241-9631
-              </p>
+          <div className="flex gap-8 md:gap-16">
+            <div className="space-y-4">
+              <h4 className="font-bold">Legal</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Termos</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Política de Privacidade</a></li>
+              </ul>
             </div>
           </div>
         </div>
-        
-        <div className="border-t border-white/10 pt-8 text-center text-xs text-gray-500">
-          © {new Date().getFullYear()} Mutum. Todos os direitos reservados.
+
+        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+          <div>
+            © {new Date().getFullYear()} REACH. Todos os direitos reservados.
+          </div>
+          <div>
+            Desenvolvido por <span className="text-white">Akira Consultoria</span>
+          </div>
         </div>
       </div>
     </footer>

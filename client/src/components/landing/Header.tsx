@@ -1,64 +1,45 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { 
-  NavigationMenu, 
-  NavigationMenuItem, 
-  NavigationMenuLink, 
-  NavigationMenuList, 
-  navigationMenuTriggerStyle 
-} from "@/components/ui/navigation-menu";
 
 export default function Header() {
+  const links = [
+    { name: "Início", href: "/" },
+    { name: "Processo", href: "#processo" },
+    { name: "Serviços", href: "#servicos" },
+    { name: "Benefícios", href: "#beneficios" },
+  ];
+
   return (
     <motion.header 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="sticky top-0 z-50 w-full bg-black text-white border-b border-white/10"
+      className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-lg border-b border-gray-100"
     >
       <div className="container mx-auto px-4 h-20 flex items-center justify-between">
         <Link href="/">
-          <a className="text-3xl font-display font-bold tracking-tighter hover:opacity-80 transition-opacity">M.</a>
+          <a className="text-2xl font-display font-bold text-brand-blue-dark tracking-tight flex items-center gap-2">
+            REACH <span className="text-brand-blue text-sm font-sans font-normal hidden md:inline-block">Performance Marketing</span>
+          </a>
         </Link>
 
-        <NavigationMenu className="hidden md:block">
-          <NavigationMenuList className="gap-2">
-            <NavigationMenuItem>
-              <Link href="/mutum">
-                <a className={navigationMenuTriggerStyle() + " bg-transparent text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white"}>
-                  A Mutum
-                </a>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/services">
-                <a className={navigationMenuTriggerStyle() + " bg-transparent text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white"}>
-                  Serviços de Marketing B2B
-                </a>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/cases">
-                <a className={navigationMenuTriggerStyle() + " bg-transparent text-brand-red hover:bg-white/10 hover:text-brand-red focus:bg-white/10 focus:text-brand-red font-semibold"}>
-                  Cases
-                </a>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/materiais">
-                <a className={navigationMenuTriggerStyle() + " bg-transparent text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white"}>
-                  Materiais
-                </a>
-              </Link>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+        <nav className="hidden md:flex items-center gap-8">
+          {links.map((link) => (
+            <a 
+              key={link.name}
+              href={link.href}
+              className="text-sm font-medium text-gray-600 hover:text-brand-blue transition-colors relative group"
+            >
+              {link.name}
+              <span className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-brand-blue transition-all group-hover:w-full" />
+            </a>
+          ))}
+        </nav>
 
         <Button 
-          variant="outline" 
-          className="border-brand-red text-brand-red hover:bg-brand-red hover:text-white transition-colors"
+          className="bg-brand-blue text-white hover:bg-blue-700 rounded-full px-6 shadow-lg shadow-brand-blue/20 hover:shadow-brand-blue/40 transition-all"
         >
-          Fale Conosco
+          Pedir Orçamento
         </Button>
       </div>
     </motion.header>
