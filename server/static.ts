@@ -94,10 +94,11 @@ export function serveStatic(app: Express) {
     // Intercept writeHead
     res.writeHead = function(statusCode: number, statusMessage?: any, headers?: any) {
       let finalHeaders = headers;
+      let finalStatusMessage = statusMessage;
       
       if (typeof statusMessage === 'object' && !headers) {
         finalHeaders = statusMessage;
-        statusMessage = undefined;
+        finalStatusMessage = undefined;
       }
       
       if (!finalHeaders) finalHeaders = {};
@@ -112,7 +113,12 @@ export function serveStatic(app: Express) {
         finalHeaders['X-Content-Type-Options'] = 'nosniff';
       }
       
-      return originalWriteHead.call(this, statusCode, statusMessage, finalHeaders);
+      // Call writeHead with correct arguments based on whether statusMessage exists
+      if (finalStatusMessage !== undefined && typeof finalStatusMessage === 'string') {
+        return (originalWriteHead as any).call(this, statusCode, finalStatusMessage, finalHeaders);
+      } else {
+        return (originalWriteHead as any).call(this, statusCode, finalHeaders);
+      }
     };
     
     // Intercept end to ensure headers are set
@@ -246,6 +252,7 @@ export function serveStatic(app: Express) {
   }));
 
   // Fall through to index.html for SPA routing (MUST be last)
+  // Note: express.static handles static assets before this route
   app.use("*", (req, res) => {
     // Helper to get request path
     const getRequestPath = () => {
@@ -263,12 +270,13 @@ export function serveStatic(app: Express) {
     
     const requestPath = getRequestPath();
     
-    // Skip API routes and static assets
+    // Skip API routes - these should be handled by API routes registered earlier
     if (requestPath.startsWith('/api/')) {
       return res.status(404).json({ error: 'Not found' });
     }
     
     // Skip if it's a static asset request (has extension and not HTML)
+    // express.static should have handled these, but if we reach here, return 404
     if (requestPath.includes('.') && !requestPath.endsWith('.html')) {
       return res.status(404).end();
     }
