@@ -145,6 +145,72 @@ export function serveStatic(app: Express) {
     next();
   });
 
+  // Serve index.html explicitly with correct headers (before express.static)
+  app.get(['/', '/index.html'], (req, res) => {
+    const indexPath = path.resolve(staticPath, "index.html");
+    
+    if (!fs.existsSync(indexPath)) {
+      // Remove Content-Disposition
+      for (let i = 0; i < 10; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      return res.status(404).end(`
+        <!DOCTYPE html>
+        <html>
+          <head><meta charset="utf-8"><title>Not Found</title></head>
+          <body><h1>404 Not Found</h1></body>
+        </html>
+      `);
+    }
+    
+    try {
+      const htmlContent = fs.readFileSync(indexPath, 'utf-8');
+      
+      // ABSOLUTE FIRST: Remove Content-Disposition
+      for (let i = 0; i < 10; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
+      
+      // Set headers EXPLICITLY
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      
+      // Remove Content-Disposition one more time
+      for (let i = 0; i < 10; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
+      
+      // Send HTML directly
+      res.status(200).end(htmlContent);
+    } catch (err) {
+      console.error('Error reading index.html:', err);
+      // Remove Content-Disposition
+      for (let i = 0; i < 10; i++) {
+        try {
+          res.removeHeader('Content-Disposition');
+        } catch (e) {}
+      }
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.status(500).end(`
+        <!DOCTYPE html>
+        <html>
+          <head><meta charset="utf-8"><title>Server Error</title></head>
+          <body><h1>Internal Server Error</h1></body>
+        </html>
+      `);
+    }
+  });
+
   // Serve static files with proper headers
   app.use(express.static(staticPath, {
     setHeaders: (res, filePath) => {
@@ -169,13 +235,13 @@ export function serveStatic(app: Express) {
       }
       
       // CRITICAL: Remove Content-Disposition - NEVER allow downloads
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 10; i++) {
         try {
           res.removeHeader('Content-Disposition');
         } catch (e) {}
       }
     },
-    index: 'index.html',
+    index: false, // Disable automatic index.html serving - we handle it explicitly above
     dotfiles: 'ignore'
   }));
 
